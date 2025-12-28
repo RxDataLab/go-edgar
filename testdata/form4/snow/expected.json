@@ -1,0 +1,456 @@
+{
+  "metadata": {
+    "source_url": "https://www.sec.gov/cgi-bin/viewer?action=view\u0026cik=1640147\u0026accession_number=0001213900-22-069931\u0026xbrl_type=v",
+    "notes": "Basic Form 4 test with Snowflake - validates parsing of issuer, reporting owner, address, and non-derivative transactions including exercise and sales"
+  },
+  "expected": {
+    "XMLName": {
+      "Space": "",
+      "Local": "ownershipDocument"
+    },
+    "SchemaVersion": "X0306",
+    "DocumentType": "4",
+    "PeriodOfReport": "2022-12-13",
+    "Aff10b5One": false,
+    "Issuer": {
+      "CIK": "0001640147",
+      "Name": "Snowflake Inc.",
+      "TradingSymbol": "SNOW"
+    },
+    "ReportingOwners": [
+      {
+        "ID": {
+          "CIK": "0001402349",
+          "Name": "Scarpelli Michael"
+        },
+        "Address": {
+          "Street1": "C/O SNOWFLAKE INC.",
+          "Street2": "106 EAST BABCOCK STREET, SUITE 3A",
+          "City": "BOZEMAN",
+          "State": "MT",
+          "ZipCode": "59715"
+        },
+        "Relationship": {
+          "IsDirector": false,
+          "IsOfficer": true,
+          "IsTenPercentOwner": false,
+          "IsOther": false,
+          "OfficerTitle": "Chief Financial Officer"
+        }
+      }
+    ],
+    "NonDerivativeTable": {
+      "Transactions": [
+        {
+          "SecurityTitle": "Class A Common Stock",
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "M",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": ""
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "200000",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "8.88",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "AcquiredDisposed": "A"
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "301097",
+              "FootnoteID": {
+                "ID": "F1"
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        },
+        {
+          "SecurityTitle": "Class A Common Stock",
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "S",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": "F2"
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "73170",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "150.841",
+              "FootnoteID": {
+                "ID": "F3"
+              }
+            },
+            "AcquiredDisposed": "D"
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "227927",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        },
+        {
+          "SecurityTitle": "Class A Common Stock",
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "S",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": "F2"
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "74907",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "151.814",
+              "FootnoteID": {
+                "ID": "F4"
+              }
+            },
+            "AcquiredDisposed": "D"
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "153020",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        },
+        {
+          "SecurityTitle": "Class A Common Stock",
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "S",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": "F2"
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "41986",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "152.655",
+              "FootnoteID": {
+                "ID": "F5"
+              }
+            },
+            "AcquiredDisposed": "D"
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "111034",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        },
+        {
+          "SecurityTitle": "Class A Common Stock",
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "S",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": "F2"
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "5496",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "153.872",
+              "FootnoteID": {
+                "ID": "F6"
+              }
+            },
+            "AcquiredDisposed": "D"
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "105538",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        },
+        {
+          "SecurityTitle": "Class A Common Stock",
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "S",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": "F2"
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "4441",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "154.76",
+              "FootnoteID": {
+                "ID": "F7"
+              }
+            },
+            "AcquiredDisposed": "D"
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "101097",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        }
+      ],
+      "Holdings": [
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        },
+        {
+          "SecurityTitle": "Class A Common Stock"
+        }
+      ]
+    },
+    "DerivativeTable": {
+      "Transactions": [
+        {
+          "SecurityTitle": "Stock Option (Right to Buy)",
+          "ConversionOrExercisePrice": {
+            "Value": "8.88",
+            "FootnoteID": {
+              "ID": ""
+            }
+          },
+          "TransactionDate": "2022-12-13",
+          "Coding": {
+            "FormType": "4",
+            "Code": "M",
+            "EquitySwapInvolved": false,
+            "FootnoteID": {
+              "ID": ""
+            }
+          },
+          "Amounts": {
+            "Shares": {
+              "Value": "200000",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "PricePerShare": {
+              "Value": "0",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "AcquiredDisposed": "A"
+          },
+          "ExerciseDate": {
+            "Value": "",
+            "FootnoteID": {
+              "ID": "F16"
+            }
+          },
+          "ExpirationDate": {
+            "Value": "2029-08-26",
+            "FootnoteID": {
+              "ID": ""
+            }
+          },
+          "UnderlyingSecurity": {
+            "SecurityTitle": {
+              "Value": "Class A Common Stock",
+              "FootnoteID": {
+                "ID": ""
+              }
+            },
+            "Shares": {
+              "Value": "200000.0",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "PostTransaction": {
+            "SharesOwnedFollowing": {
+              "Value": "2219299",
+              "FootnoteID": {
+                "ID": ""
+              }
+            }
+          },
+          "OwnershipNature": {
+            "DirectOrIndirect": "D",
+            "NatureOfOwnership": ""
+          }
+        }
+      ],
+      "Holdings": null
+    },
+    "Footnotes": [
+      {
+        "ID": "F1",
+        "Text": "Includes shares to be issued in connection with the vesting of one or more restricted stock\n            units.\n        "
+      },
+      {
+        "ID": "F2",
+        "Text": "The sales reported in this Form 4 were effected for financial and tax planning purposes.\n        "
+      },
+      {
+        "ID": "F3",
+        "Text": "The price reported in Column 4 is a weighted-average price. The shares were sold in multiple\n            transactions ranging from $150.300 to $151.295, inclusive. The Reporting Person undertakes to provide the\n            Issuer, any security holder of the Issuer, or the Staff of the Securities and Exchange Commission, upon\n            request, full information regarding the number of shares sold at each separate price within the ranges set\n            forth in these footnotes.\n        "
+      },
+      {
+        "ID": "F4",
+        "Text": "The price reported in Column 4 is a weighted-average price. The shares were sold in multiple\n            transactions ranging from $151.300 to $152.295, inclusive.\n        "
+      },
+      {
+        "ID": "F5",
+        "Text": "The price reported in Column 4 is a weighted-average price. The shares were sold in multiple\n            transactions ranging from $152.300 to $153.090, inclusive.\n        "
+      },
+      {
+        "ID": "F6",
+        "Text": "The price reported in Column 4 is a weighted-average price. The shares were sold in multiple\n            transactions ranging from $153.405 to $154.362, inclusive.\n        "
+      },
+      {
+        "ID": "F7",
+        "Text": "The price reported in Column 4 is a weighted-average price. The shares were sold in multiple\n            transactions ranging from $154.510 to $154.890, inclusive.\n        "
+      },
+      {
+        "ID": "F8",
+        "Text": "The shares are held by the Michael P. Scarpelli 2019 Grantor Retained Annuity Trust for which\n            the Reporting Person is a beneficiary.\n        "
+      },
+      {
+        "ID": "F9",
+        "Text": "The shares are held by the Scarpelli Family Trust for which the Reporting Person is a\n            trustee.\n        "
+      },
+      {
+        "ID": "F10",
+        "Text": "The shares are held by the 2020 Fintail Irrevocable GST Exempt Trust f/b/o Child 1 dated\n            12/29/2020 for which the Reporting Person's child is the beneficiary.\n        "
+      },
+      {
+        "ID": "F11",
+        "Text": "The shares are held by the 2020 Fintail Irrevocable Non-Exempt Trust f/b/o Child 1 dated\n            12/29/2020 for which the Reporting Person's child is the beneficiary.\n        "
+      },
+      {
+        "ID": "F12",
+        "Text": "The shares are held by the 2020 Fintail Irrevocable GST Exempt Trust f/b/o Child 2 dated\n            12/29/2020 for which the Reporting Person's child is the beneficiary.\n        "
+      },
+      {
+        "ID": "F13",
+        "Text": "The shares are held by the 2020 Fintail Irrevocable Non-Exempt Trust f/b/o Child 2 dated\n            12/29/2020 for which the Reporting Person's child is the beneficiary.\n        "
+      },
+      {
+        "ID": "F14",
+        "Text": "The shares are held by the 2020 Fintail Irrevocable GST Exempt Trust f/b/o Child 3 dated\n            12/29/2020 for which the Reporting Persons' child is the beneficiary.\n        "
+      },
+      {
+        "ID": "F15",
+        "Text": "The shares are held by the 2020 Fintail Irrevocable Non-Exempt Trust f/b/o Child 3 dated\n            12/29/2020 for which the Reporting Person's child is the beneficiary.\n        "
+      },
+      {
+        "ID": "F16",
+        "Text": "The shares subject to the option are immediately exercisable and vest in 48 equal monthly\n            installments beginning on August 19, 2019, subject to Reporting Person's continuous service through each\n            such vesting date.\n        "
+      }
+    ],
+    "Signatures": [
+      {
+        "Name": "/s/ Travis Shrout, Attorney-in-Fact",
+        "Date": "2022-12-14"
+      }
+    ],
+    "Remarks": ""
+  }
+}
