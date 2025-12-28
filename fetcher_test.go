@@ -17,7 +17,8 @@ func TestFetchForm_RealSEC(t *testing.T) {
 	}
 
 	url := "https://www.sec.gov/Archives/edgar/data/1631574/000119312525314736/ownership.xml"
-	data, err := edgar.FetchForm(url)
+	email := "test@example.com"
+	data, err := edgar.FetchForm(url, email)
 	require.NoError(t, err)
 	assert.NotEmpty(t, data)
 
@@ -35,13 +36,14 @@ func TestFetchForm_RateLimit(t *testing.T) {
 	}
 
 	url := "https://www.sec.gov/Archives/edgar/data/1631574/000119312525314736/ownership.xml"
+	email := "test@example.com"
 
 	// Make two requests - should take at least 100ms total due to rate limiting
 	start := time.Now()
-	_, err := edgar.FetchForm(url)
+	_, err := edgar.FetchForm(url, email)
 	require.NoError(t, err)
 
-	_, err = edgar.FetchForm(url)
+	_, err = edgar.FetchForm(url, email)
 	require.NoError(t, err)
 	elapsed := time.Since(start)
 
