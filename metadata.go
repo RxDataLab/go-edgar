@@ -90,10 +90,10 @@ func GenerateFilename(meta *FilingMetadata, ext string) string {
 
 // SaveOptions configures how files should be saved
 type SaveOptions struct {
-	SaveOriginal   bool
-	OriginalPath   string // If empty, uses smart naming
-	OutputPath     string // If empty, uses smart naming or stdout
-	OutputDir      string // Directory for output files (default: current dir)
+	SaveOriginal bool
+	OriginalPath string // If empty, uses smart naming
+	OutputPath   string // If empty, uses smart naming or stdout
+	OutputDir    string // Directory for output files (default: current dir)
 }
 
 // SaveResult contains paths to saved files
