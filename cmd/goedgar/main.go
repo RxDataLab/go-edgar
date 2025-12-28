@@ -111,9 +111,10 @@ func run(source, email string, saveOriginal bool, outputPath string) error {
 	// Merge metadata from URL and form
 	meta := edgar.MergeMetadata(urlMeta, formMeta)
 
-	// Prepare save options
+	// Prepare save options with default output directory
 	saveOpts := edgar.SaveOptions{
 		SaveOriginal: saveOriginal,
+		OutputDir:    "./output",
 	}
 
 	// Determine output path
