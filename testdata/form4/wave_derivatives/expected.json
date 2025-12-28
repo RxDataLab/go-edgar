@@ -4,871 +4,333 @@
     "notes": "Wave Life Sciences - derivative transactions (option exercises + sales), 10b5-1 plan with adoption date, complete derivative structure with exerciseDate footnote refs and underlyingSecurity"
   },
   "expected": {
-    "XMLName": {
-      "Space": "",
-      "Local": "ownershipDocument"
+    "formType": "4",
+    "schemaVersion": "X0508",
+    "periodOfReport": "2025-12-08",
+    "has10b51Plan": true,
+    "issuer": {
+      "cik": "0001631574",
+      "name": "Wave Life Sciences Ltd.",
+      "ticker": "WVE"
     },
-    "SchemaVersion": "X0508",
-    "DocumentType": "4",
-    "PeriodOfReport": "2025-12-08",
-    "Aff10b5One": true,
-    "Issuer": {
-      "CIK": "0001631574",
-      "Name": "Wave Life Sciences Ltd.",
-      "TradingSymbol": "WVE"
-    },
-    "ReportingOwners": [
+    "reportingOwners": [
       {
-        "ID": {
-          "CIK": "0001657765",
-          "Name": "Moran Kyle"
+        "cik": "0001657765",
+        "name": "Moran Kyle",
+        "address": {
+          "street1": "C/O WAVE LIFE SCIENCES LTD.,",
+          "street2": "733 CONCORD AVE.",
+          "city": "CAMBRIDGE",
+          "state": "MA",
+          "zipCode": "02138"
         },
-        "Address": {
-          "Street1": "C/O WAVE LIFE SCIENCES LTD.,",
-          "Street2": "733 CONCORD AVE.",
-          "City": "CAMBRIDGE",
-          "State": "MA",
-          "ZipCode": "02138"
-        },
-        "Relationship": {
-          "IsDirector": false,
-          "IsOfficer": true,
-          "IsTenPercentOwner": false,
-          "IsOther": false,
-          "OfficerTitle": "Chief Financial Officer"
+        "relationship": {
+          "isDirector": false,
+          "isOfficer": true,
+          "isTenPercentOwner": false,
+          "isOther": false,
+          "officerTitle": "Chief Financial Officer"
         }
       }
     ],
-    "NonDerivativeTable": {
-      "Transactions": [
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "M",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "60000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "2.83",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "A"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "149218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "60000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "13.20",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "89218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "M",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "100000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "3.14",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "A"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "189218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "15.00",
-              "FootnoteID": {
-                "ID": "F4"
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "139218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "13.20",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "89218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "M",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "4.75",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "A"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "139218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "18.00",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "89218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-09",
-          "Coding": {
-            "FormType": "4",
-            "Code": "M",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "36000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "8.17",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "A"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "125218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-09",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "36.000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "20.25",
-              "FootnoteID": {
-                "ID": "F6"
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "89218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-09",
-          "Coding": {
-            "FormType": "4",
-            "Code": "M",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "10.48",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "A"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "139218",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Ordinary Shares",
-          "TransactionDate": "2025-12-09",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": "F1"
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "20.025",
-              "FootnoteID": {
-                "ID": "F6"
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "90365",
-              "FootnoteID": {
-                "ID": "F7"
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        }
-      ],
-      "Holdings": null
-    },
-    "DerivativeTable": {
-      "Transactions": [
-        {
-          "SecurityTitle": "Share Option (right to buy)",
-          "ConversionOrExercisePrice": {
-            "Value": "2.83",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "A",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "60000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "ExerciseDate": {
-            "Value": "",
-            "FootnoteID": {
-              "ID": "F2"
-            }
-          },
-          "ExpirationDate": {
-            "Value": "2032-07-25",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "UnderlyingSecurity": {
-            "SecurityTitle": {
-              "Value": "Ordinary Shares",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "Shares": {
-              "Value": "60000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Share Option (right to buy)",
-          "ConversionOrExercisePrice": {
-            "Value": "3.14",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "A",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "100000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "ExerciseDate": {
-            "Value": "",
-            "FootnoteID": {
-              "ID": "F3"
-            }
-          },
-          "ExpirationDate": {
-            "Value": "2032-01-01",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "UnderlyingSecurity": {
-            "SecurityTitle": {
-              "Value": "Ordinary Shares",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "Shares": {
-              "Value": "100000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "75000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Share Option (right to buy)",
-          "ConversionOrExercisePrice": {
-            "Value": "4.75",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "TransactionDate": "2025-12-08",
-          "Coding": {
-            "FormType": "4",
-            "Code": "A",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "ExerciseDate": {
-            "Value": "",
-            "FootnoteID": {
-              "ID": "F5"
-            }
-          },
-          "ExpirationDate": {
-            "Value": "2033-02-17",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "UnderlyingSecurity": {
-            "SecurityTitle": {
-              "Value": "Ordinary Shares",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "222700",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Share Option (right to buy)",
-          "ConversionOrExercisePrice": {
-            "Value": "8.17",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "TransactionDate": "2025-12-09",
-          "Coding": {
-            "FormType": "4",
-            "Code": "A",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "36000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "ExerciseDate": {
-            "Value": "",
-            "FootnoteID": {
-              "ID": "F2"
-            }
-          },
-          "ExpirationDate": {
-            "Value": "2030-03-03",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "UnderlyingSecurity": {
-            "SecurityTitle": {
-              "Value": "Ordinary Shares",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "Shares": {
-              "Value": "36000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Share Option (right to buy)",
-          "ConversionOrExercisePrice": {
-            "Value": "10.48",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "TransactionDate": "2025-12-09",
-          "Coding": {
-            "FormType": "4",
-            "Code": "A",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "PricePerShare": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "ExerciseDate": {
-            "Value": "",
-            "FootnoteID": {
-              "ID": "F2"
-            }
-          },
-          "ExpirationDate": {
-            "Value": "2031-02-01",
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "UnderlyingSecurity": {
-            "SecurityTitle": {
-              "Value": "Ordinary Shares",
-              "FootnoteID": {
-                "ID": ""
-              }
-            },
-            "Shares": {
-              "Value": "50000",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "0",
-              "FootnoteID": {
-                "ID": ""
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        }
-      ],
-      "Holdings": null
-    },
-    "Footnotes": [
+    "transactions": [
       {
-        "ID": "F1",
-        "Text": "The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan adopted by the reporting person on March 13, 2025."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "M",
+        "shares": 60000,
+        "pricePerShare": 2.83,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 149218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
       },
       {
-        "ID": "F2",
-        "Text": "These share options are fully vested."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "S",
+        "shares": 60000,
+        "pricePerShare": 13.2,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 89218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
       },
       {
-        "ID": "F3",
-        "Text": "The share option represented a right to purchase a total of 175,000 ordinary shares that vest as to 25% of the shares on January 1, 2023 and vests as to an additional 6.25% of the shares quarterly thereafter until January 1, 2026."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "M",
+        "shares": 100000,
+        "pricePerShare": 3.14,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 189218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
       },
       {
-        "ID": "F4",
-        "Text": "The price reflected is the weighted-average sale price for shares sold. The shares were sold in multiple transactions and the range of sale prices for the transactions reported was $15.00 to $15.045 per share. The reporting person undertakes to provide to the issuer, any security holder of the issuer, or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "S",
+        "shares": 50000,
+        "pricePerShare": 15,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 139218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1",
+          "F4"
+        ]
       },
       {
-        "ID": "F5",
-        "Text": "The share option represented a right to purchase a total of 272,200 ordinary shares that vest as to 25% of the shares on February 17, 2024 and vests as to an additional 6.25% of the shares quarterly thereafter until February 17, 2027."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "S",
+        "shares": 50000,
+        "pricePerShare": 13.2,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 89218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
       },
       {
-        "ID": "F6",
-        "Text": "The price reflected is the weighted-average sale price for shares sold. The shares were sold in multiple transactions and the range of sale prices for the transactions reported was $20.00 to $20.22 per share. The reporting person undertakes to provide to the issuer, any security holder of the issuer, or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "M",
+        "shares": 50000,
+        "pricePerShare": 4.75,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 139218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
       },
       {
-        "ID": "F7",
-        "Text": "Includes 1,147 ordinary shares acquired on July 14, 2025, under the issuer's 2019 Employee Share Purchase Plan."
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "S",
+        "shares": 50000,
+        "pricePerShare": 18,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 89218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
+      },
+      {
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-09",
+        "transactionCode": "M",
+        "shares": 36000,
+        "pricePerShare": 8.17,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 125218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
+      },
+      {
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-09",
+        "transactionCode": "S",
+        "shares": 36,
+        "pricePerShare": 20.25,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 89218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1",
+          "F6"
+        ]
+      },
+      {
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-09",
+        "transactionCode": "M",
+        "shares": 50000,
+        "pricePerShare": 10.48,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 139218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1"
+        ]
+      },
+      {
+        "securityTitle": "Ordinary Shares",
+        "transactionDate": "2025-12-09",
+        "transactionCode": "S",
+        "shares": 50000,
+        "pricePerShare": 20.025,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 90365,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "footnotes": [
+          "F1",
+          "F6",
+          "F7"
+        ]
       }
     ],
-    "Signatures": [
+    "derivatives": [
       {
-        "Name": "/s/ Kyle Moran",
-        "Date": "2025-12-10"
+        "securityTitle": "Share Option (right to buy)",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "A",
+        "shares": 60000,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "exercisePrice": 2.83,
+        "expirationDate": "2032-07-25",
+        "underlyingTitle": "Ordinary Shares",
+        "underlyingShares": 60000,
+        "sharesOwnedFollowing": 0,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "footnotes": [
+          "F2"
+        ]
+      },
+      {
+        "securityTitle": "Share Option (right to buy)",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "A",
+        "shares": 100000,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "exercisePrice": 3.14,
+        "expirationDate": "2032-01-01",
+        "underlyingTitle": "Ordinary Shares",
+        "underlyingShares": 100000,
+        "sharesOwnedFollowing": 75000,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "footnotes": [
+          "F3"
+        ]
+      },
+      {
+        "securityTitle": "Share Option (right to buy)",
+        "transactionDate": "2025-12-08",
+        "transactionCode": "A",
+        "shares": 50000,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "exercisePrice": 4.75,
+        "expirationDate": "2033-02-17",
+        "underlyingTitle": "Ordinary Shares",
+        "underlyingShares": 50000,
+        "sharesOwnedFollowing": 222700,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "footnotes": [
+          "F5"
+        ]
+      },
+      {
+        "securityTitle": "Share Option (right to buy)",
+        "transactionDate": "2025-12-09",
+        "transactionCode": "A",
+        "shares": 36000,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "exercisePrice": 8.17,
+        "expirationDate": "2030-03-03",
+        "underlyingTitle": "Ordinary Shares",
+        "underlyingShares": 36000,
+        "sharesOwnedFollowing": 0,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "footnotes": [
+          "F2"
+        ]
+      },
+      {
+        "securityTitle": "Share Option (right to buy)",
+        "transactionDate": "2025-12-09",
+        "transactionCode": "A",
+        "shares": 50000,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "exercisePrice": 10.48,
+        "expirationDate": "2031-02-01",
+        "underlyingTitle": "Ordinary Shares",
+        "underlyingShares": 50000,
+        "sharesOwnedFollowing": 0,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "footnotes": [
+          "F2"
+        ]
       }
     ],
-    "Remarks": ""
+    "footnotes": [
+      {
+        "id": "F1",
+        "text": "The sales reported in this Form 4 were effected pursuant to a Rule 10b5-1 trading plan adopted by the reporting person on March 13, 2025."
+      },
+      {
+        "id": "F2",
+        "text": "These share options are fully vested."
+      },
+      {
+        "id": "F3",
+        "text": "The share option represented a right to purchase a total of 175,000 ordinary shares that vest as to 25% of the shares on January 1, 2023 and vests as to an additional 6.25% of the shares quarterly thereafter until January 1, 2026."
+      },
+      {
+        "id": "F4",
+        "text": "The price reflected is the weighted-average sale price for shares sold. The shares were sold in multiple transactions and the range of sale prices for the transactions reported was $15.00 to $15.045 per share. The reporting person undertakes to provide to the issuer, any security holder of the issuer, or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price."
+      },
+      {
+        "id": "F5",
+        "text": "The share option represented a right to purchase a total of 272,200 ordinary shares that vest as to 25% of the shares on February 17, 2024 and vests as to an additional 6.25% of the shares quarterly thereafter until February 17, 2027."
+      },
+      {
+        "id": "F6",
+        "text": "The price reflected is the weighted-average sale price for shares sold. The shares were sold in multiple transactions and the range of sale prices for the transactions reported was $20.00 to $20.22 per share. The reporting person undertakes to provide to the issuer, any security holder of the issuer, or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price."
+      },
+      {
+        "id": "F7",
+        "text": "Includes 1,147 ordinary shares acquired on July 14, 2025, under the issuer's 2019 Employee Share Purchase Plan."
+      }
+    ],
+    "signatures": [
+      {
+        "name": "/s/ Kyle Moran",
+        "date": "2025-12-10"
+      }
+    ]
   }
 }

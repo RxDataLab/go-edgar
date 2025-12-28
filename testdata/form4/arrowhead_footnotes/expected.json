@@ -4,195 +4,115 @@
     "notes": "Edge case: Multiple footnotes, 10b5-1 trading plan, weighted average prices, footnote references on shares/price/ownership fields"
   },
   "expected": {
-    "XMLName": {
-      "Space": "",
-      "Local": "ownershipDocument"
+    "formType": "4",
+    "schemaVersion": "X0508",
+    "periodOfReport": "2025-12-19",
+    "has10b51Plan": true,
+    "issuer": {
+      "cik": "0000879407",
+      "name": "ARROWHEAD PHARMACEUTICALS, INC.",
+      "ticker": "ARWR"
     },
-    "SchemaVersion": "X0508",
-    "DocumentType": "4",
-    "PeriodOfReport": "2025-12-19",
-    "Aff10b5One": true,
-    "Issuer": {
-      "CIK": "0000879407",
-      "Name": "ARROWHEAD PHARMACEUTICALS, INC.",
-      "TradingSymbol": "ARWR"
-    },
-    "ReportingOwners": [
+    "reportingOwners": [
       {
-        "ID": {
-          "CIK": "0001242615",
-          "Name": "OLUKOTUN ADEOYE Y"
+        "cik": "0001242615",
+        "name": "OLUKOTUN ADEOYE Y",
+        "address": {
+          "street1": "177 E COLORADO BLVD",
+          "street2": "STE 700",
+          "city": "PASADENA",
+          "state": "CA",
+          "zipCode": "91105"
         },
-        "Address": {
-          "Street1": "177 E COLORADO BLVD",
-          "Street2": "STE 700",
-          "City": "PASADENA",
-          "State": "CA",
-          "ZipCode": "91105"
-        },
-        "Relationship": {
-          "IsDirector": true,
-          "IsOfficer": false,
-          "IsTenPercentOwner": false,
-          "IsOther": false,
-          "OfficerTitle": ""
+        "relationship": {
+          "isDirector": true,
+          "isOfficer": false,
+          "isTenPercentOwner": false,
+          "isOther": false
         }
       }
     ],
-    "NonDerivativeTable": {
-      "Transactions": [
-        {
-          "SecurityTitle": "Common Stock",
-          "TransactionDate": "2025-12-19",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "3090",
-              "FootnoteID": {
-                "ID": "F1"
-              }
-            },
-            "PricePerShare": {
-              "Value": "66.70",
-              "FootnoteID": {
-                "ID": "F2"
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "40510",
-              "FootnoteID": {
-                "ID": "F3"
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Common Stock",
-          "TransactionDate": "2025-12-19",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "6083",
-              "FootnoteID": {
-                "ID": "F1"
-              }
-            },
-            "PricePerShare": {
-              "Value": "68.04",
-              "FootnoteID": {
-                "ID": "F4"
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "34427",
-              "FootnoteID": {
-                "ID": "F3"
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        },
-        {
-          "SecurityTitle": "Common Stock",
-          "TransactionDate": "2025-12-19",
-          "Coding": {
-            "FormType": "4",
-            "Code": "S",
-            "EquitySwapInvolved": false,
-            "FootnoteID": {
-              "ID": ""
-            }
-          },
-          "Amounts": {
-            "Shares": {
-              "Value": "827",
-              "FootnoteID": {
-                "ID": "F1"
-              }
-            },
-            "PricePerShare": {
-              "Value": "68.48",
-              "FootnoteID": {
-                "ID": "F5"
-              }
-            },
-            "AcquiredDisposed": "D"
-          },
-          "PostTransaction": {
-            "SharesOwnedFollowing": {
-              "Value": "33600",
-              "FootnoteID": {
-                "ID": "F3"
-              }
-            }
-          },
-          "OwnershipNature": {
-            "DirectOrIndirect": "D",
-            "NatureOfOwnership": ""
-          }
-        }
-      ],
-      "Holdings": null
-    },
-    "DerivativeTable": {
-      "Transactions": null,
-      "Holdings": null
-    },
-    "Footnotes": [
+    "transactions": [
       {
-        "ID": "F1",
-        "Text": "Shares were sold pursuant to a 10b5-1 trading plan adopted by the Reporting Person in accordance with Rule 10b5-1 of the Securities Exchange Act of 1934, as amended."
+        "securityTitle": "Common Stock",
+        "transactionDate": "2025-12-19",
+        "transactionCode": "S",
+        "shares": 3090,
+        "pricePerShare": 66.7,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 40510,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "footnotes": [
+          "F1",
+          "F2",
+          "F3"
+        ]
       },
       {
-        "ID": "F2",
-        "Text": "The price reported on Column 4 is the weighted average price. These shares were sold in multiple transactions at prices ranging from $66.52 to $67.40, inclusive. The reporting person undertakes to provide to Arrowhead Pharmaceuticals, Inc., any security holder of Arrowhead Pharmaceuticals, Inc., or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price within the ranges set forth in this footnote of this Form 4."
+        "securityTitle": "Common Stock",
+        "transactionDate": "2025-12-19",
+        "transactionCode": "S",
+        "shares": 6083,
+        "pricePerShare": 68.04,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 34427,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "footnotes": [
+          "F1",
+          "F4",
+          "F3"
+        ]
       },
       {
-        "ID": "F3",
-        "Text": "Includes previously reported shares of common stock underlying Restricted Stock Units granted to the Reporting person, a portion of which are still subject to certain vesting conditions."
-      },
-      {
-        "ID": "F4",
-        "Text": "The price reported on Column 4 is the weighted average price. These shares were sold in multiple transactions at prices ranging from $67.62 to $68.30, inclusive. The reporting person undertakes to provide to Arrowhead Pharmaceuticals, Inc., any security holder of Arrowhead Pharmaceuticals, Inc., or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price within the ranges set forth in this footnote of this Form 4."
-      },
-      {
-        "ID": "F5",
-        "Text": "The price reported on Column 4 is the weighted average price. These shares were sold in multiple transactions at prices ranging from $68.38 to $68.56, inclusive. The reporting person undertakes to provide to Arrowhead Pharmaceuticals, Inc., any security holder of Arrowhead Pharmaceuticals, Inc., or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price within the ranges set forth in this footnote of this Form 4."
+        "securityTitle": "Common Stock",
+        "transactionDate": "2025-12-19",
+        "transactionCode": "S",
+        "shares": 827,
+        "pricePerShare": 68.48,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 33600,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "footnotes": [
+          "F1",
+          "F5",
+          "F3"
+        ]
       }
     ],
-    "Signatures": [
+    "derivatives": null,
+    "footnotes": [
       {
-        "Name": "/s/Adeoye Olukotun",
-        "Date": "2025-12-23"
+        "id": "F1",
+        "text": "Shares were sold pursuant to a 10b5-1 trading plan adopted by the Reporting Person in accordance with Rule 10b5-1 of the Securities Exchange Act of 1934, as amended."
+      },
+      {
+        "id": "F2",
+        "text": "The price reported on Column 4 is the weighted average price. These shares were sold in multiple transactions at prices ranging from $66.52 to $67.40, inclusive. The reporting person undertakes to provide to Arrowhead Pharmaceuticals, Inc., any security holder of Arrowhead Pharmaceuticals, Inc., or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price within the ranges set forth in this footnote of this Form 4."
+      },
+      {
+        "id": "F3",
+        "text": "Includes previously reported shares of common stock underlying Restricted Stock Units granted to the Reporting person, a portion of which are still subject to certain vesting conditions."
+      },
+      {
+        "id": "F4",
+        "text": "The price reported on Column 4 is the weighted average price. These shares were sold in multiple transactions at prices ranging from $67.62 to $68.30, inclusive. The reporting person undertakes to provide to Arrowhead Pharmaceuticals, Inc., any security holder of Arrowhead Pharmaceuticals, Inc., or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price within the ranges set forth in this footnote of this Form 4."
+      },
+      {
+        "id": "F5",
+        "text": "The price reported on Column 4 is the weighted average price. These shares were sold in multiple transactions at prices ranging from $68.38 to $68.56, inclusive. The reporting person undertakes to provide to Arrowhead Pharmaceuticals, Inc., any security holder of Arrowhead Pharmaceuticals, Inc., or the staff of the Securities and Exchange Commission, upon request, full information regarding the number of shares sold at each separate price within the ranges set forth in this footnote of this Form 4."
       }
     ],
-    "Remarks": ""
+    "signatures": [
+      {
+        "name": "/s/Adeoye Olukotun",
+        "date": "2025-12-23"
+      }
+    ]
   }
 }

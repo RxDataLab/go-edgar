@@ -166,15 +166,31 @@ Each `expected.json` contains:
     "notes": "What this test case validates (e.g., 'Edge case: Multiple reporting owners')"
   },
   "expected": {
-    // Full Form4 struct as JSON
-    "DocumentType": "4",
-    "PeriodOfReport": "2025-12-19",
-    "Issuer": {
-      "CIK": "0000879407",
-      "Name": "ARROWHEAD PHARMACEUTICALS, INC.",
-      "TradingSymbol": "ARWR"
+    // Simplified Form4Output structure (table-like with numeric types)
+    "formType": "4",
+    "periodOfReport": "2025-12-19",
+    "has10b51Plan": true,
+    "issuer": {
+      "cik": "0000879407",
+      "name": "ARROWHEAD PHARMACEUTICALS, INC.",
+      "ticker": "ARWR"
     },
-    // ... complete parsed structure
+    "transactions": [
+      {
+        "securityTitle": "Common Stock",
+        "transactionDate": "2025-12-19",
+        "transactionCode": "S",
+        "shares": 50000,            // numeric, not string
+        "pricePerShare": 13.20,     // numeric, not string
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 89218,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,        // per-transaction flag
+        "footnotes": ["F1", "F4"]   // array of IDs
+      }
+    ]
+    // ... complete simplified structure
   }
 }
 ```
@@ -197,10 +213,11 @@ The `TestForm4Parser` function:
 1. **Discovers** all subdirectories in `testdata/form4/`
 2. For each directory:
    - Loads `input.xml`
-   - Loads `expected.json`
-   - Parses the XML
+   - Loads `expected.json` (contains Form4Output structure)
+   - Parses the XML to Form4 struct
+   - **Converts** to Form4Output (simplified structure)
    - **Compares** actual vs expected using deep equality (`go-cmp`)
-   - **Validates** helper methods (GetMarketTrades, GetPurchases, GetSales)
+   - **Validates** helper methods on raw Form4 (GetMarketTrades, GetPurchases, GetSales)
 3. Reports any mismatches with detailed diffs
 
 ### Comparison Method

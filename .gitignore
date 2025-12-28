@@ -1,2 +1,3 @@
 goedgar
 output/
+testdata/**/*.new

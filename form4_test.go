@@ -23,8 +23,8 @@ type TestCaseMetadata struct {
 
 // Form4TestCase represents a complete test case with metadata and expected output
 type Form4TestCase struct {
-	Metadata TestCaseMetadata `json:"metadata"`
-	Expected *edgar.Form4     `json:"expected"`
+	Metadata TestCaseMetadata   `json:"metadata"`
+	Expected *edgar.Form4Output `json:"expected"`
 }
 
 // TestForm4Parser is a data-driven test that discovers and tests all Form 4 test cases
@@ -65,34 +65,62 @@ func TestForm4Parser(t *testing.T) {
 			err = json.Unmarshal(expectedData, &tc)
 			require.NoError(t, err, "failed to parse expected.json")
 
-			// Parse the Form 4
-			actual, err := edgar.Parse(xmlData)
-			require.NoError(t, err, "failed to parse Form 4")
-
-			// If -update flag is set, regenerate expected.json
-			if *updateGolden {
-				tc.Expected = actual
-				updatedData, err := json.MarshalIndent(tc, "", "  ")
-				require.NoError(t, err, "failed to marshal updated test case")
-
-				err = os.WriteFile(expectedPath, updatedData, 0o644)
-				require.NoError(t, err, "failed to write updated expected.json")
-
-				t.Logf("Updated golden file: %s", expectedPath)
-				return
-			}
-
 			// Log metadata
 			t.Logf("Source: %s", tc.Metadata.SourceURL)
 			t.Logf("Notes: %s", tc.Metadata.Notes)
 
-			// Compare actual vs expected using deep equality
-			if diff := cmp.Diff(tc.Expected, actual); diff != "" {
-				t.Errorf("parsed Form4 mismatch (-expected +actual):\n%s", diff)
+			// Parse the Form 4 (raw XML -> Form4 struct)
+			form4, err := edgar.Parse(xmlData)
+			require.NoError(t, err, "failed to parse Form 4")
+
+			// Convert to output format (simplified structure)
+			// This is what the CLI actually outputs
+			freshOutput := form4.ToOutput()
+
+			// ALWAYS compare fresh output with committed golden file
+			// This ensures golden files stay up to date with parser changes
+			if diff := cmp.Diff(tc.Expected, freshOutput); diff != "" {
+				// Write the fresh output to a .new file for review
+				newPath := expectedPath + ".new"
+				tc.Expected = freshOutput
+				newData, err := json.MarshalIndent(tc, "", "  ")
+				require.NoError(t, err, "failed to marshal new output")
+
+				err = os.WriteFile(newPath, newData, 0o644)
+				require.NoError(t, err, "failed to write .new file")
+
+				if *updateGolden {
+					// -update flag: Copy .new to actual golden file
+					err = os.WriteFile(expectedPath, newData, 0o644)
+					require.NoError(t, err, "failed to update golden file")
+
+					// Remove .new file after accepting
+					os.Remove(newPath)
+
+					t.Logf("✓ Accepted new snapshot: %s", expectedPath)
+				} else {
+					// No -update flag: Fail with helpful message and show diff
+					t.Errorf("Snapshot mismatch!\n\n"+
+						"DIFF (-committed +fresh):\n%s\n\n"+
+						"A new snapshot has been written to:\n  %s\n\n"+
+						"To review the change:\n"+
+						"  diff %s %s\n\n"+
+						"If the new output is CORRECT, accept it with:\n"+
+						"  go test -v -run TestForm4Parser/%s -update\n\n"+
+						"If the new output is WRONG, fix the parser and re-run tests.\n"+
+						"The .new file will be automatically cleaned up on next test run.",
+						diff, newPath, expectedPath, newPath, testCase)
+				}
+			} else {
+				// Output matches golden file - clean up any stale .new files
+				newPath := expectedPath + ".new"
+				if _, err := os.Stat(newPath); err == nil {
+					os.Remove(newPath)
+				}
 			}
 
-			// Additional verification: test helper methods
-			verifyHelperMethods(t, actual)
+			// Additional verification: test helper methods on the raw Form4 struct
+			verifyHelperMethods(t, form4)
 		})
 	}
 }

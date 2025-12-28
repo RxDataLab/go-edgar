@@ -33,9 +33,10 @@ func ParseAny(r io.Reader) (*ParsedForm, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse Form 4: %w", err)
 		}
+		// Convert to simplified output structure
 		return &ParsedForm{
 			FormType: "4",
-			Data:     form4,
+			Data:     form4.ToOutput(),
 		}, nil
 	default:
 		return nil, fmt.Errorf("form type %s not yet supported", formType)
