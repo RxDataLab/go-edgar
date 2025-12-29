@@ -1,6 +1,6 @@
 # go-edgar
 
-Fast, zero-dependency Go parser for SEC Form 4 insider trading filings.
+Fast, zero-dependency Go parser for SEC Form 4 insider trading filings. Used by [RxDataLab](https://rxdatalab.com/) for company analysis and in our data pipelines for [our biotech research application](https://app.rxdatalab.com/)
 
 ## What is Form 4?
 
@@ -8,11 +8,10 @@ SEC Form 4 is filed by company insiders (officers, directors, 10%+ owners) withi
 
 ## Features
 
-- **Zero dependencies** - Uses only Go stdlib (test dependencies OK)
+- **Zero dependencies** - Uses only Go stdlib
 - **Complete parsing** - Non-derivative AND derivative transactions (options, warrants)
-- **10b5-1 detection** - Automatic detection of Rule 10b5-1 trading plans
+- **10b5-1 detection** - Automatic detection and tagging of Rule 10b5-1 trading plans
 - **Type-safe** - Compile-time checked structs
-- **Numeric conversions** - Easy conversion to float64/int with error handling
 - **SEC fetcher** - Built-in HTTP client with rate limiting
 - **Fast** - Parse thousands of filings per second
 - **Simple API** - Easy to use and understand

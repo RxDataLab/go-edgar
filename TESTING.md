@@ -34,7 +34,6 @@ testdata/
 
 ### 1. snow (Snowflake Inc.)
 - **CIK:** 1640147
-- **Source:** https://www.sec.gov/cgi-bin/viewer?action=view&cik=1640147&accession_number=0001213900-22-069931&xbrl_type=v
 - **Focus:** Basic Form 4 parsing with CFO transaction
 - **Tests:** Basic metadata, issuer info, reporting owner, transactions (non-derivative and derivative), helper methods
 

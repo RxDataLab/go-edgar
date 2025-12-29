@@ -47,38 +47,41 @@ type RelationshipOut struct {
 
 // NonDerivativeTransactionOut represents a single transaction row (table-like)
 type NonDerivativeTransactionOut struct {
-	SecurityTitle        string   `json:"securityTitle"`
-	TransactionDate      string   `json:"transactionDate"`
-	TransactionCode      string   `json:"transactionCode"`
-	Shares               *float64 `json:"shares"`               // Nullable for empty values
-	PricePerShare        *float64 `json:"pricePerShare"`        // Nullable for empty values
-	AcquiredDisposed     string   `json:"acquiredDisposed"`     // "A" or "D"
-	SharesOwnedFollowing *float64 `json:"sharesOwnedFollowing"` // Nullable
-	DirectIndirect       string   `json:"directIndirect"`       // "D" or "I"
-	NatureOfOwnership    string   `json:"natureOfOwnership,omitempty"`
-	EquitySwapInvolved   bool     `json:"equitySwapInvolved"`
-	Is10b51Plan          bool     `json:"is10b51Plan"` // Per-transaction 10b5-1 indicator
-	Footnotes            []string `json:"footnotes"`   // Array of footnote IDs
+	SecurityTitle         string   `json:"securityTitle"`
+	TransactionDate       string   `json:"transactionDate"`
+	TransactionCode       string   `json:"transactionCode"`
+	Shares                *float64 `json:"shares"`               // Nullable for empty values
+	PricePerShare         *float64 `json:"pricePerShare"`        // Nullable for empty values
+	AcquiredDisposed      string   `json:"acquiredDisposed"`     // "A" or "D"
+	SharesOwnedFollowing  *float64 `json:"sharesOwnedFollowing"` // Nullable
+	DirectIndirect        string   `json:"directIndirect"`       // "D" or "I"
+	NatureOfOwnership     string   `json:"natureOfOwnership,omitempty"`
+	EquitySwapInvolved    bool     `json:"equitySwapInvolved"`
+	Is10b51Plan           bool     `json:"is10b51Plan"`                     // Per-transaction 10b5-1 indicator
+	Plan10b51AdoptionDate string   `json:"plan10b51AdoptionDate,omitempty"` // ISO-8601 date (YYYY-MM-DD), empty if not 10b5-1 or date unknown
+	Footnotes             []string `json:"footnotes"`                       // Array of footnote IDs
 }
 
 // DerivativeTransactionOut represents a derivative transaction row
 type DerivativeTransactionOut struct {
-	SecurityTitle        string   `json:"securityTitle"`
-	TransactionDate      string   `json:"transactionDate"`
-	TransactionCode      string   `json:"transactionCode"`
-	Shares               *float64 `json:"shares"`
-	PricePerShare        *float64 `json:"pricePerShare"`
-	AcquiredDisposed     string   `json:"acquiredDisposed"`
-	ExercisePrice        *float64 `json:"exercisePrice,omitempty"`
-	ExerciseDate         string   `json:"exerciseDate,omitempty"`
-	ExpirationDate       string   `json:"expirationDate,omitempty"`
-	UnderlyingTitle      string   `json:"underlyingTitle,omitempty"`
-	UnderlyingShares     *float64 `json:"underlyingShares,omitempty"`
-	SharesOwnedFollowing *float64 `json:"sharesOwnedFollowing"`
-	DirectIndirect       string   `json:"directIndirect"`
-	NatureOfOwnership    string   `json:"natureOfOwnership,omitempty"`
-	EquitySwapInvolved   bool     `json:"equitySwapInvolved"`
-	Footnotes            []string `json:"footnotes"` // Array of footnote IDs
+	SecurityTitle         string   `json:"securityTitle"`
+	TransactionDate       string   `json:"transactionDate"`
+	TransactionCode       string   `json:"transactionCode"`
+	Shares                *float64 `json:"shares"`
+	PricePerShare         *float64 `json:"pricePerShare"`
+	AcquiredDisposed      string   `json:"acquiredDisposed"`
+	ExercisePrice         *float64 `json:"exercisePrice,omitempty"`
+	ExerciseDate          string   `json:"exerciseDate,omitempty"`
+	ExpirationDate        string   `json:"expirationDate,omitempty"`
+	UnderlyingTitle       string   `json:"underlyingTitle,omitempty"`
+	UnderlyingShares      *float64 `json:"underlyingShares,omitempty"`
+	SharesOwnedFollowing  *float64 `json:"sharesOwnedFollowing"`
+	DirectIndirect        string   `json:"directIndirect"`
+	NatureOfOwnership     string   `json:"natureOfOwnership,omitempty"`
+	EquitySwapInvolved    bool     `json:"equitySwapInvolved"`
+	Is10b51Plan           bool     `json:"is10b51Plan"`                     // Per-transaction 10b5-1 indicator
+	Plan10b51AdoptionDate string   `json:"plan10b51AdoptionDate,omitempty"` // ISO-8601 date (YYYY-MM-DD), empty if not 10b5-1 or date unknown
+	Footnotes             []string `json:"footnotes"`                       // Array of footnote IDs
 }
 
 // NonDerivativeHoldingOut represents a holding row
@@ -116,6 +119,9 @@ type SignatureOutput struct {
 
 // ToOutput converts a Form4 to the simplified output structure
 func (f *Form4) ToOutput() *Form4Output {
+	// Parse footnotes once to identify 10b5-1 plans and adoption dates
+	tenb51Map := f.Parse10b51Footnotes()
+
 	out := &Form4Output{
 		FormType:        f.DocumentType,
 		SchemaVersion:   f.SchemaVersion,
@@ -130,7 +136,7 @@ func (f *Form4) ToOutput() *Form4Output {
 	// Convert non-derivative transactions
 	if f.NonDerivativeTable != nil {
 		for _, txn := range f.NonDerivativeTable.Transactions {
-			out.Transactions = append(out.Transactions, convertNonDerivTransaction(txn, f))
+			out.Transactions = append(out.Transactions, convertNonDerivTransaction(txn, tenb51Map))
 		}
 		for _, holding := range f.NonDerivativeTable.Holdings {
 			out.Holdings = append(out.Holdings, convertNonDerivHolding(holding))
@@ -140,7 +146,7 @@ func (f *Form4) ToOutput() *Form4Output {
 	// Convert derivative transactions
 	if f.DerivativeTable != nil {
 		for _, txn := range f.DerivativeTable.Transactions {
-			out.Derivatives = append(out.Derivatives, convertDerivTransaction(txn))
+			out.Derivatives = append(out.Derivatives, convertDerivTransaction(txn, tenb51Map))
 		}
 		for _, holding := range f.DerivativeTable.Holdings {
 			out.DerivHoldings = append(out.DerivHoldings, convertDerivHolding(holding))
@@ -183,7 +189,7 @@ func convertReportingOwners(owners []ReportingOwner) []ReportingOwnerOutput {
 	return out
 }
 
-func convertNonDerivTransaction(txn NonDerivativeTransaction, form *Form4) NonDerivativeTransactionOut {
+func convertNonDerivTransaction(txn NonDerivativeTransaction, tenb51Map map[string]string) NonDerivativeTransactionOut {
 	// Collect all footnote IDs
 	footnotes := collectFootnotes(
 		txn.Coding.FootnoteID.ID,
@@ -192,23 +198,27 @@ func convertNonDerivTransaction(txn NonDerivativeTransaction, form *Form4) NonDe
 		txn.PostTransaction.SharesOwnedFollowing.FootnoteID.ID,
 	)
 
+	// Check if any footnote indicates 10b5-1 plan
+	is10b51, adoptionDate := check10b51Plan(footnotes, tenb51Map)
+
 	return NonDerivativeTransactionOut{
-		SecurityTitle:        txn.SecurityTitle,
-		TransactionDate:      txn.TransactionDate,
-		TransactionCode:      txn.Coding.Code,
-		Shares:               toFloat64Ptr(txn.Amounts.Shares),
-		PricePerShare:        toFloat64Ptr(txn.Amounts.PricePerShare),
-		AcquiredDisposed:     txn.Amounts.AcquiredDisposed,
-		SharesOwnedFollowing: toFloat64Ptr(txn.PostTransaction.SharesOwnedFollowing),
-		DirectIndirect:       txn.OwnershipNature.DirectOrIndirect,
-		NatureOfOwnership:    txn.OwnershipNature.NatureOfOwnership,
-		EquitySwapInvolved:   txn.Coding.EquitySwapInvolved,
-		Is10b51Plan:          txn.IsUnder10b51(form),
-		Footnotes:            footnotes,
+		SecurityTitle:         txn.SecurityTitle,
+		TransactionDate:       txn.TransactionDate,
+		TransactionCode:       txn.Coding.Code,
+		Shares:                toFloat64Ptr(txn.Amounts.Shares),
+		PricePerShare:         toFloat64Ptr(txn.Amounts.PricePerShare),
+		AcquiredDisposed:      txn.Amounts.AcquiredDisposed,
+		SharesOwnedFollowing:  toFloat64Ptr(txn.PostTransaction.SharesOwnedFollowing),
+		DirectIndirect:        txn.OwnershipNature.DirectOrIndirect,
+		NatureOfOwnership:     txn.OwnershipNature.NatureOfOwnership,
+		EquitySwapInvolved:    txn.Coding.EquitySwapInvolved,
+		Is10b51Plan:           is10b51,
+		Plan10b51AdoptionDate: adoptionDate,
+		Footnotes:             footnotes,
 	}
 }
 
-func convertDerivTransaction(txn DerivativeTransaction) DerivativeTransactionOut {
+func convertDerivTransaction(txn DerivativeTransaction, tenb51Map map[string]string) DerivativeTransactionOut {
 	footnotes := collectFootnotes(
 		txn.Coding.FootnoteID.ID,
 		txn.Amounts.Shares.FootnoteID.ID,
@@ -221,23 +231,28 @@ func convertDerivTransaction(txn DerivativeTransaction) DerivativeTransactionOut
 		txn.PostTransaction.SharesOwnedFollowing.FootnoteID.ID,
 	)
 
+	// Check if any footnote indicates 10b5-1 plan
+	is10b51, adoptionDate := check10b51Plan(footnotes, tenb51Map)
+
 	return DerivativeTransactionOut{
-		SecurityTitle:        txn.SecurityTitle,
-		TransactionDate:      txn.TransactionDate,
-		TransactionCode:      txn.Coding.Code,
-		Shares:               toFloat64Ptr(txn.Amounts.Shares),
-		PricePerShare:        toFloat64Ptr(txn.Amounts.PricePerShare),
-		AcquiredDisposed:     txn.Amounts.AcquiredDisposed,
-		ExercisePrice:        toFloat64Ptr(txn.ConversionOrExercisePrice),
-		ExerciseDate:         txn.ExerciseDate.Value,
-		ExpirationDate:       txn.ExpirationDate.Value,
-		UnderlyingTitle:      txn.UnderlyingSecurity.SecurityTitle.Value,
-		UnderlyingShares:     toFloat64Ptr(txn.UnderlyingSecurity.Shares),
-		SharesOwnedFollowing: toFloat64Ptr(txn.PostTransaction.SharesOwnedFollowing),
-		DirectIndirect:       txn.OwnershipNature.DirectOrIndirect,
-		NatureOfOwnership:    txn.OwnershipNature.NatureOfOwnership,
-		EquitySwapInvolved:   txn.Coding.EquitySwapInvolved,
-		Footnotes:            footnotes,
+		SecurityTitle:         txn.SecurityTitle,
+		TransactionDate:       txn.TransactionDate,
+		TransactionCode:       txn.Coding.Code,
+		Shares:                toFloat64Ptr(txn.Amounts.Shares),
+		PricePerShare:         toFloat64Ptr(txn.Amounts.PricePerShare),
+		AcquiredDisposed:      txn.Amounts.AcquiredDisposed,
+		ExercisePrice:         toFloat64Ptr(txn.ConversionOrExercisePrice),
+		ExerciseDate:          txn.ExerciseDate.Value,
+		ExpirationDate:        txn.ExpirationDate.Value,
+		UnderlyingTitle:       txn.UnderlyingSecurity.SecurityTitle.Value,
+		UnderlyingShares:      toFloat64Ptr(txn.UnderlyingSecurity.Shares),
+		SharesOwnedFollowing:  toFloat64Ptr(txn.PostTransaction.SharesOwnedFollowing),
+		DirectIndirect:        txn.OwnershipNature.DirectOrIndirect,
+		NatureOfOwnership:     txn.OwnershipNature.NatureOfOwnership,
+		EquitySwapInvolved:    txn.Coding.EquitySwapInvolved,
+		Is10b51Plan:           is10b51,
+		Plan10b51AdoptionDate: adoptionDate,
+		Footnotes:             footnotes,
 	}
 }
 
@@ -317,4 +332,17 @@ func collectFootnotes(ids ...string) []string {
 	}
 
 	return result
+}
+
+// check10b51Plan checks if any of the transaction's footnotes indicate a 10b5-1 plan
+// Returns: (is10b51Plan bool, adoptionDate string)
+// If multiple footnotes reference 10b5-1, returns the first non-empty adoption date found
+func check10b51Plan(footnoteIDs []string, tenb51Map map[string]string) (bool, string) {
+	for _, fnID := range footnoteIDs {
+		if adoptionDate, exists := tenb51Map[fnID]; exists {
+			// This footnote indicates 10b5-1 plan
+			return true, adoptionDate // Returns date (may be empty string if not found in footnote)
+		}
+	}
+	return false, ""
 }
