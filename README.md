@@ -290,14 +290,6 @@ Typical performance on modern hardware:
 
 - [edgartools](https://github.com/dgunning/edgartools) - Python library for SEC filings (reference implementation)
 
-## License
-
-MIT
-
-## Contributing
-
-Contributions welcome! This is a learning project to understand SEC filings and Go XML parsing.
-
 ## Resources
 
 - [SEC Form 4 Information](https://www.sec.gov/files/form4data.pdf)
