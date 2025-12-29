@@ -13,7 +13,7 @@ Fast, zero-dependency Go parser for SEC filings. Used by [RxDataLab](https://rxd
 - [ ] 8-K (parse form type e.g., 7.1 and content + links included for later parsing/interpreting)
 
 **CLI Functions**
-- [ ] Retrieve and parse supported forms or target form over date range
+- [X] Retrieve and parse supported forms over date range by CIK
 
 ## Features
 
@@ -57,9 +57,11 @@ go install github.com/RxDataLab/go-edgar/cmd/goedgar@latest
 
 ## CLI Usage
 
-The `goedgar` CLI tool parses SEC filings from URLs or files and outputs clean JSON.
+The `goedgar` CLI tool supports two modes:
+1. **Single file mode** - Parse individual filings from URLs or files
+2. **Batch mode** - Fetch and parse all filings for a CIK within a date range
 
-### Basic Usage
+### Single File Mode
 
 ```bash
 # Parse from SEC URL (requires SEC_EMAIL environment variable)
@@ -76,9 +78,38 @@ export SEC_EMAIL="your-email@example.com"
 ./goedgar -o results.json https://www.sec.gov/.../ownership.xml
 ```
 
+### Batch Mode (NEW!)
+
+Fetch and parse multiple filings for a company by CIK:
+
+```bash
+# All Form 4s for a CIK in a date range
+export SEC_EMAIL="your-email@example.com"
+./goedgar --cik 1601830 --form 4 --from 2025-01-01 --to 2025-06-30
+
+# Save to file
+./goedgar --cik 1601830 --form 4 --from 2025-01-01 --to 2025-06-30 -o output.json
+
+# All recent Form 4s (no date filter)
+./goedgar --cik 78003 --form 4
+
+# Include all historical filings (with pagination)
+./goedgar --cik 78003 --form 4 --all
+```
+
+**Batch mode features:**
+- Automatically fetches company submissions index
+- Filters by form type and date range
+- Handles pagination for companies with many filings
+- Rate-limited to comply with SEC guidelines (10 req/sec)
+- Progress indicators during download
+- Returns JSON array of all matching filings
+
+**Output format:** Batch mode returns a JSON array where each element has the same structure as single-file mode, making it easy to process both uniformly.
+
 ### Output Directory
 
-By default, files are saved to `./output/` with smart naming based on CIK and accession number.
+By default, files in single-file mode are saved to `./output/` with smart naming based on CIK and accession number.
 
 Example: `1631574-0001193125-25-314736_ownership.json`
 
@@ -87,6 +118,36 @@ Example: `1631574-0001193125-25-314736_ownership.json`
 ### JSON Output Format
 
 Form 4 filings are converted to clean, table-like JSON optimized for data analysis.
+
+#### Metadata Section
+
+Every Form 4 output includes a metadata section with filing information:
+
+```json
+{
+  "metadata": {
+    "cik": "0001601830",
+    "accessionNumber": "0001856369-25-000018",
+    "formType": "4",
+    "periodOfReport": "2025-12-19",
+    "filingDate": "2025-12-19",
+    "reportDate": "2025-12-19",
+    "source": "https://www.sec.gov/Archives/edgar/data/..."
+  },
+  "issuer": {...},
+  "reportingOwners": [...],
+  "transactions": [...]
+}
+```
+
+**Metadata fields:**
+- `cik` - Central Index Key (always present)
+- `accessionNumber` - SEC accession number (when available)
+- `formType` - Form type (e.g., "4")
+- `periodOfReport` - Period covered by the report (from XML)
+- `filingDate` - Date filed with SEC (batch mode only)
+- `reportDate` - Report date (batch mode only)
+- `source` - URL or file path of the source document
 
 ### Transaction Structure
 
@@ -297,10 +358,10 @@ import edgar "github.com/RxDataLab/go-edgar"
 
 // Fetch Form 4 directly from SEC
 // Note: SEC requires User-Agent with email
-edgar.SetUserEmail("your-email@example.com")
-
 url := "https://www.sec.gov/Archives/edgar/data/1631574/000119312525314736/ownership.xml"
-xmlData, err := edgar.FetchForm(url)
+email := "your-email@example.com"
+
+xmlData, err := edgar.FetchForm(url, email)
 if err != nil {
     panic(err)
 }
@@ -308,6 +369,45 @@ if err != nil {
 // Parse fetched data
 form4, _ := edgar.Parse(xmlData)
 output := form4.ToOutput()
+```
+
+### Batch Fetching by CIK (NEW!)
+
+Fetch and parse all Form 4s for a company within a date range:
+
+```go
+import edgar "github.com/RxDataLab/go-edgar"
+
+opts := edgar.BatchOptions{
+    CIK:              "1601830",
+    FormType:         "4",
+    DateFrom:         "2025-01-01",
+    DateTo:           "2025-06-30",
+    Email:            "your-email@example.com",
+    IncludePaginated: false, // Set to true to fetch all historical filings
+}
+
+result, err := edgar.FetchAndParseBatch(opts)
+if err != nil {
+    panic(err)
+}
+
+// result.Filings is []*Form4Output
+fmt.Printf("Found %d filings\n", result.TotalFound)
+fmt.Printf("Successfully parsed %d filings\n", result.Fetched)
+
+// Process each filing
+for _, filing := range result.Filings {
+    fmt.Printf("Filing date: %s\n", filing.Metadata.FilingDate)
+    fmt.Printf("Transactions: %d\n", len(filing.Transactions))
+}
+
+// Check for errors
+if len(result.Errors) > 0 {
+    for _, err := range result.Errors {
+        fmt.Printf("Error: %v\n", err)
+    }
+}
 ```
 
 ### Core Functions
@@ -320,10 +420,19 @@ func Parse(data []byte) (*Form4, error)
 func (f *Form4) ToOutput() *Form4Output
 
 // Fetch Form 4 from SEC (with rate limiting)
-func FetchForm(url string) ([]byte, error)
+func FetchForm(url string, email string) ([]byte, error)
 
-// Set email for SEC User-Agent (required by SEC)
-func SetUserEmail(email string)
+// Fetch company submissions index by CIK
+func FetchSubmissions(cik string, email string) (*Submissions, error)
+
+// Batch fetch and parse filings
+func FetchAndParseBatch(opts BatchOptions) (*BatchResult, error)
+
+// Filter filings by form type
+func FilterByForm(filings []Filing, formType string) []Filing
+
+// Filter filings by date range
+func FilterByDateRange(filings []Filing, from, to string) []Filing
 ```
 
 ### Helper Methods (on raw Form4 struct)
@@ -420,13 +529,17 @@ Typical performance on modern hardware:
 ```
 go-edgar/
 ├── cmd/goedgar/          # CLI tool
-├── testdata/form4/       # Test cases with ground truth
+├── testdata/
+│   ├── form4/            # Form 4 test cases with ground truth
+│   └── cik/              # CIK JSON test data
 ├── form4.go              # Core parsing logic
 ├── form4_output.go       # JSON output format
 ├── tenb51.go             # 10b5-1 detection logic
 ├── fetcher.go            # SEC HTTP client
 ├── parser.go             # Auto-detection and dispatch
-└── metadata.go           # File naming and metadata
+├── metadata.go           # File naming and metadata
+├── submissions.go        # CIK JSON parsing and filtering
+└── batch.go              # Batch download orchestration
 ```
 
 ### Building
