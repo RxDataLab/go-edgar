@@ -45,6 +45,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F1"
         ]
@@ -60,6 +61,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2",
           "F3"
@@ -76,6 +78,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2",
           "F4"
@@ -92,6 +95,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2",
           "F5"
@@ -108,6 +112,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2",
           "F6"
@@ -124,6 +129,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2",
           "F7"
@@ -145,6 +151,8 @@
         "sharesOwnedFollowing": 2219299,
         "directIndirect": "D",
         "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F16"
         ]

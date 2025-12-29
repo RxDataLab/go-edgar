@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "source_url": "https://www.sec.gov/Archives/edgar/data/10795/000162828025058843/wk-form4_1767009647.xml",
+    "notes": "Becton Dickinson - 10b5-1 plan information in \u003cremarks\u003e tag instead of footnotes, tests fallback to remarks field"
+  },
+  "expected": {
+    "formType": "4",
+    "schemaVersion": "X0508",
+    "periodOfReport": "2025-12-26",
+    "has10b51Plan": true,
+    "issuer": {
+      "cik": "0000010795",
+      "name": "BECTON DICKINSON \u0026 CO",
+      "ticker": "BDX"
+    },
+    "reportingOwners": [
+      {
+        "cik": "0002034349",
+        "name": "Feld Michael",
+        "address": {
+          "street1": "C/O BECTON, DICKINSON AND COMPANY",
+          "street2": "1 BECTON DRIVE",
+          "city": "FRANKLIN LAKES",
+          "state": "NJ",
+          "zipCode": "07417"
+        },
+        "relationship": {
+          "isDirector": false,
+          "isOfficer": true,
+          "isTenPercentOwner": false,
+          "isOther": false,
+          "officerTitle": "EVP, CRO \u0026 Pres. Life Sciences"
+        }
+      }
+    ],
+    "transactions": [
+      {
+        "securityTitle": "Common Stock",
+        "transactionDate": "2025-12-26",
+        "transactionCode": "S",
+        "shares": 74,
+        "pricePerShare": 196.08,
+        "acquiredDisposed": "D",
+        "sharesOwnedFollowing": 16506,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": true,
+        "plan10b51AdoptionDate": "2025-02-07",
+        "footnotes": null
+      }
+    ],
+    "derivatives": null,
+    "footnotes": null,
+    "signatures": [
+      {
+        "name": "Donna Kalazdy, by power of attorney from Michael Feld",
+        "date": "2025-12-29"
+      }
+    ]
+  }
+}

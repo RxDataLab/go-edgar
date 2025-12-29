@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -34,7 +35,9 @@ func GetSecEmail() (string, error) {
 	if !emailRegex.MatchString(email) {
 		return "", fmt.Errorf("invalid email format: %s", email)
 	}
-
+	if strings.HasSuffix(email, "example.com") {
+		return "", fmt.Errorf("Use a real email address, not example.com: %s", email)
+	}
 	return email, nil
 }
 

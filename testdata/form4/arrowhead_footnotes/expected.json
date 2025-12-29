@@ -44,6 +44,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": true,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F1",
           "F2",
@@ -61,6 +62,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": true,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F1",
           "F4",
@@ -78,6 +80,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": true,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F1",
           "F5",

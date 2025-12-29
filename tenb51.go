@@ -86,13 +86,18 @@ func Extract10b51(text string) TenB51Result {
 	return result
 }
 
-// Parse10b51Footnotes analyzes all footnotes and returns a map of footnote IDs
+// Parse10b51Footnotes analyzes all footnotes AND remarks and returns a map of footnote IDs
 // to their adoption dates (in ISO format). Only includes footnotes that indicate
 // active 10b5-1 plan usage.
+//
+// Special case: If remarks contain 10b5-1 info, the map includes key "__REMARKS__"
+// which should be applied to transactions that don't have specific footnote references.
+//
 // Returns: map[footnoteID]adoptionDate (empty string if no date found but is 10b5-1)
 func (f *Form4) Parse10b51Footnotes() map[string]string {
 	result := make(map[string]string)
 
+	// Check all footnotes
 	for _, fn := range f.Footnotes {
 		analysis := Extract10b51(fn.Text)
 		if analysis.Is10b51Plan {
@@ -101,6 +106,18 @@ func (f *Form4) Parse10b51Footnotes() map[string]string {
 			} else {
 				// 10b5-1 plan but no date found
 				result[fn.ID] = ""
+			}
+		}
+	}
+
+	// Check remarks field (fallback for cases where 10b5-1 is mentioned in remarks, not footnotes)
+	if f.Remarks != "" {
+		analysis := Extract10b51(f.Remarks)
+		if analysis.Is10b51Plan {
+			if analysis.TenB51AdoptionDate != nil {
+				result["__REMARKS__"] = *analysis.TenB51AdoptionDate
+			} else {
+				result["__REMARKS__"] = ""
 			}
 		}
 	}

@@ -231,6 +231,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2"
         ]
@@ -250,6 +251,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F3"
         ]
@@ -269,6 +271,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F5"
         ]
@@ -288,6 +291,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2"
         ]
@@ -307,6 +311,7 @@
         "directIndirect": "D",
         "equitySwapInvolved": false,
         "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
         "footnotes": [
           "F2"
         ]

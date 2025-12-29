@@ -1,0 +1,183 @@
+{
+  "metadata": {
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1374339/000110465925095035/tm2523607-3_4seq1.xml",
+    "notes": "ProMis Neurosciences - transaction code X (Exercise of In-the-Money or At-the-Money Derivative Security), no 10b5-1 plan"
+  },
+  "expected": {
+    "formType": "4",
+    "schemaVersion": "X0508",
+    "periodOfReport": "2025-07-25",
+    "has10b51Plan": false,
+    "issuer": {
+      "cik": "0001374339",
+      "name": "ProMIS Neurosciences Inc.",
+      "ticker": "PMN"
+    },
+    "reportingOwners": [
+      {
+        "cik": "0002089163",
+        "name": "Jeremy M. Sclar 2012 Irrevocable Family Trust",
+        "address": {
+          "street1": "33 BOYLSTON STREET, SUITE 3000",
+          "city": "CHESTNUT HILL",
+          "state": "MA",
+          "zipCode": "02467"
+        },
+        "relationship": {
+          "isDirector": false,
+          "isOfficer": false,
+          "isTenPercentOwner": true,
+          "isOther": false
+        }
+      }
+    ],
+    "transactions": [
+      {
+        "securityTitle": "Common Shares, no par value",
+        "transactionDate": "2025-07-25",
+        "transactionCode": "X",
+        "shares": 697674,
+        "pricePerShare": null,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 2315111,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F1"
+        ]
+      },
+      {
+        "securityTitle": "Common Shares, no par value",
+        "transactionDate": "2025-07-25",
+        "transactionCode": "X",
+        "shares": 697674,
+        "pricePerShare": null,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 3012785,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F2"
+        ]
+      },
+      {
+        "securityTitle": "Common Shares, no par value",
+        "transactionDate": "2025-07-25",
+        "transactionCode": "X",
+        "shares": 697674,
+        "pricePerShare": null,
+        "acquiredDisposed": "A",
+        "sharesOwnedFollowing": 3710459,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F3"
+        ]
+      }
+    ],
+    "derivatives": [
+      {
+        "securityTitle": "Tranche A Common Share Purchase Warrants",
+        "transactionDate": "2025-07-25",
+        "transactionCode": "X",
+        "shares": 697674,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "underlyingTitle": "Common Shares",
+        "underlyingShares": 697674,
+        "sharesOwnedFollowing": 0,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F1"
+        ]
+      },
+      {
+        "securityTitle": "Tranche B Common Share Purchase Warrants",
+        "transactionDate": "2025-07-25",
+        "transactionCode": "X",
+        "shares": 697674,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "underlyingTitle": "Common Shares",
+        "underlyingShares": 697674,
+        "sharesOwnedFollowing": 0,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F2"
+        ]
+      },
+      {
+        "securityTitle": "Tranche C Common Share Purchase Warrants",
+        "transactionDate": "2025-07-25",
+        "transactionCode": "X",
+        "shares": 697674,
+        "pricePerShare": 0,
+        "acquiredDisposed": "D",
+        "underlyingTitle": "Common Shares",
+        "underlyingShares": 697674,
+        "sharesOwnedFollowing": 0,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F3"
+        ]
+      },
+      {
+        "securityTitle": "Warrant to Purchase Common Shares",
+        "transactionDate": "2025-07-29",
+        "transactionCode": "P",
+        "shares": 3139533,
+        "pricePerShare": null,
+        "acquiredDisposed": "A",
+        "underlyingTitle": "Common Shares",
+        "underlyingShares": 3139533,
+        "sharesOwnedFollowing": 3139533,
+        "directIndirect": "D",
+        "equitySwapInvolved": false,
+        "is10b51Plan": false,
+        "plan10b51AdoptionDate": null,
+        "footnotes": [
+          "F4"
+        ]
+      }
+    ],
+    "footnotes": [
+      {
+        "id": "F1",
+        "text": "On July 25, 2025, the Jeremy M. Sclar 2012 Irrevocable Family Trust (the \"JS Trust\") exercised 697,674 Tranche A purchase warrants, each exercisable to purchase one Common Share. These warrants were exercisable at an exercise price of $2.02 per warrant share; however, following an offer by the JS Trust and an acceptance by the Issuer, were exercised in full at an exercise price of $0.83518 per share."
+      },
+      {
+        "id": "F2",
+        "text": "On July 25, 2025, the JS Trust exercised 697,674 Tranche B purchase warrants, each exercisable to purchase one Common Share. These warrants were exercisable at an exercise price of $2.02 per warrant share; however, following an offer by the JS Trust and an acceptance by the Issuer, were exercised in full at an exercise price of $0.83518 per share."
+      },
+      {
+        "id": "F3",
+        "text": "On July 25, 2025, the JS Trust exercised 697,674 Tranche C purchase warrants, each exercisable to purchase one Common Share. These warrants were exercisable at an exercise price of $2.50 per warrant share; however, following an offer by the JS Trust and an acceptance by the Issuer, were exercised in full at an exercise price of $0.83518 per share."
+      },
+      {
+        "id": "F4",
+        "text": "On July 29, 2025, the JS Trust acquired a warrant to purchase 3,139,533 Common Shares at an exercise price of $1.25 per share. The purchase price for the warrant was $0.1875 per Common Share underlying the warrant. The warrant is currently exercisable and expires five years after the date of issuance."
+      }
+    ],
+    "signatures": [
+      {
+        "name": "Jeremy M. Sclar 2012 Irrevocable Family Trust By: /s/ Richard A. Marks, Trustee",
+        "date": "2025-09-30"
+      }
+    ]
+  }
+}

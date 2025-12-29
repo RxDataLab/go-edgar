@@ -57,9 +57,9 @@ type NonDerivativeTransactionOut struct {
 	DirectIndirect        string   `json:"directIndirect"`       // "D" or "I"
 	NatureOfOwnership     string   `json:"natureOfOwnership,omitempty"`
 	EquitySwapInvolved    bool     `json:"equitySwapInvolved"`
-	Is10b51Plan           bool     `json:"is10b51Plan"`                     // Per-transaction 10b5-1 indicator
-	Plan10b51AdoptionDate string   `json:"plan10b51AdoptionDate,omitempty"` // ISO-8601 date (YYYY-MM-DD), empty if not 10b5-1 or date unknown
-	Footnotes             []string `json:"footnotes"`                       // Array of footnote IDs
+	Is10b51Plan           bool     `json:"is10b51Plan"`           // Per-transaction 10b5-1 indicator (always present)
+	Plan10b51AdoptionDate *string  `json:"plan10b51AdoptionDate"` // ISO-8601 date (YYYY-MM-DD), null if not 10b5-1 or date unknown (always present)
+	Footnotes             []string `json:"footnotes"`             // Array of footnote IDs
 }
 
 // DerivativeTransactionOut represents a derivative transaction row
@@ -79,9 +79,9 @@ type DerivativeTransactionOut struct {
 	DirectIndirect        string   `json:"directIndirect"`
 	NatureOfOwnership     string   `json:"natureOfOwnership,omitempty"`
 	EquitySwapInvolved    bool     `json:"equitySwapInvolved"`
-	Is10b51Plan           bool     `json:"is10b51Plan"`                     // Per-transaction 10b5-1 indicator
-	Plan10b51AdoptionDate string   `json:"plan10b51AdoptionDate,omitempty"` // ISO-8601 date (YYYY-MM-DD), empty if not 10b5-1 or date unknown
-	Footnotes             []string `json:"footnotes"`                       // Array of footnote IDs
+	Is10b51Plan           bool     `json:"is10b51Plan"`           // Per-transaction 10b5-1 indicator (always present)
+	Plan10b51AdoptionDate *string  `json:"plan10b51AdoptionDate"` // ISO-8601 date (YYYY-MM-DD), null if not 10b5-1 or date unknown (always present)
+	Footnotes             []string `json:"footnotes"`             // Array of footnote IDs
 }
 
 // NonDerivativeHoldingOut represents a holding row
@@ -119,8 +119,28 @@ type SignatureOutput struct {
 
 // ToOutput converts a Form4 to the simplified output structure
 func (f *Form4) ToOutput() *Form4Output {
-	// Parse footnotes once to identify 10b5-1 plans and adoption dates
+	// Parse footnotes and remarks once to identify 10b5-1 plans and adoption dates
+	//
+	// Priority order for 10b5-1 detection:
+	// 1. Transaction-specific footnotes (highest priority)
+	// 2. Remarks field (fallback when aff10b5One=true but NO footnotes mention 10b5-1)
+	// 3. Not a 10b5-1 transaction
+	//
+	// The map contains footnote IDs -> adoption dates (ISO format)
+	// Special key "__REMARKS__" is used when remarks contains 10b5-1 info
 	tenb51Map := f.Parse10b51Footnotes()
+
+	// Check if we should use remarks as global fallback
+	// Only use remarks if: aff10b5One=true AND no footnotes mention 10b5-1
+	// This handles cases like Becton Dickinson where 10b5-1 info is ONLY in remarks
+	has10b51Footnotes := false
+	for k := range tenb51Map {
+		if k != "__REMARKS__" {
+			has10b51Footnotes = true
+			break
+		}
+	}
+	useRemarksGlobal := f.Aff10b5One && !has10b51Footnotes && tenb51Map["__REMARKS__"] != ""
 
 	out := &Form4Output{
 		FormType:        f.DocumentType,
@@ -136,7 +156,7 @@ func (f *Form4) ToOutput() *Form4Output {
 	// Convert non-derivative transactions
 	if f.NonDerivativeTable != nil {
 		for _, txn := range f.NonDerivativeTable.Transactions {
-			out.Transactions = append(out.Transactions, convertNonDerivTransaction(txn, tenb51Map))
+			out.Transactions = append(out.Transactions, convertNonDerivTransaction(txn, tenb51Map, useRemarksGlobal))
 		}
 		for _, holding := range f.NonDerivativeTable.Holdings {
 			out.Holdings = append(out.Holdings, convertNonDerivHolding(holding))
@@ -146,7 +166,7 @@ func (f *Form4) ToOutput() *Form4Output {
 	// Convert derivative transactions
 	if f.DerivativeTable != nil {
 		for _, txn := range f.DerivativeTable.Transactions {
-			out.Derivatives = append(out.Derivatives, convertDerivTransaction(txn, tenb51Map))
+			out.Derivatives = append(out.Derivatives, convertDerivTransaction(txn, tenb51Map, useRemarksGlobal))
 		}
 		for _, holding := range f.DerivativeTable.Holdings {
 			out.DerivHoldings = append(out.DerivHoldings, convertDerivHolding(holding))
@@ -189,7 +209,7 @@ func convertReportingOwners(owners []ReportingOwner) []ReportingOwnerOutput {
 	return out
 }
 
-func convertNonDerivTransaction(txn NonDerivativeTransaction, tenb51Map map[string]string) NonDerivativeTransactionOut {
+func convertNonDerivTransaction(txn NonDerivativeTransaction, tenb51Map map[string]string, useRemarksGlobal bool) NonDerivativeTransactionOut {
 	// Collect all footnote IDs
 	footnotes := collectFootnotes(
 		txn.Coding.FootnoteID.ID,
@@ -199,7 +219,7 @@ func convertNonDerivTransaction(txn NonDerivativeTransaction, tenb51Map map[stri
 	)
 
 	// Check if any footnote indicates 10b5-1 plan
-	is10b51, adoptionDate := check10b51Plan(footnotes, tenb51Map)
+	is10b51, adoptionDate := check10b51Plan(footnotes, tenb51Map, useRemarksGlobal)
 
 	return NonDerivativeTransactionOut{
 		SecurityTitle:         txn.SecurityTitle,
@@ -218,7 +238,7 @@ func convertNonDerivTransaction(txn NonDerivativeTransaction, tenb51Map map[stri
 	}
 }
 
-func convertDerivTransaction(txn DerivativeTransaction, tenb51Map map[string]string) DerivativeTransactionOut {
+func convertDerivTransaction(txn DerivativeTransaction, tenb51Map map[string]string, useRemarksGlobal bool) DerivativeTransactionOut {
 	footnotes := collectFootnotes(
 		txn.Coding.FootnoteID.ID,
 		txn.Amounts.Shares.FootnoteID.ID,
@@ -232,7 +252,7 @@ func convertDerivTransaction(txn DerivativeTransaction, tenb51Map map[string]str
 	)
 
 	// Check if any footnote indicates 10b5-1 plan
-	is10b51, adoptionDate := check10b51Plan(footnotes, tenb51Map)
+	is10b51, adoptionDate := check10b51Plan(footnotes, tenb51Map, useRemarksGlobal)
 
 	return DerivativeTransactionOut{
 		SecurityTitle:         txn.SecurityTitle,
@@ -334,15 +354,44 @@ func collectFootnotes(ids ...string) []string {
 	return result
 }
 
-// check10b51Plan checks if any of the transaction's footnotes indicate a 10b5-1 plan
-// Returns: (is10b51Plan bool, adoptionDate string)
-// If multiple footnotes reference 10b5-1, returns the first non-empty adoption date found
-func check10b51Plan(footnoteIDs []string, tenb51Map map[string]string) (bool, string) {
+// check10b51Plan checks if a transaction is part of a 10b5-1 trading plan
+//
+// Detection priority (strictest to least strict):
+//  1. Check transaction-specific footnotes for 10b5-1 mentions (HIGHEST PRIORITY)
+//  2. If useRemarksGlobal=true, apply remarks-based 10b5-1 to ALL transactions (FALLBACK)
+//  3. Not a 10b5-1 transaction
+//
+// useRemarksGlobal should only be true when:
+//   - aff10b5One XML flag is true (form declares 10b5-1 plan)
+//   - AND no footnotes mention 10b5-1 (remarks is the only source)
+//
+// Returns: (is10b51Plan bool, adoptionDate *string)
+//   - adoptionDate is nil if plan exists but no date found
+//   - adoptionDate is non-nil pointer to ISO date string if date found
+func check10b51Plan(footnoteIDs []string, tenb51Map map[string]string, useRemarksGlobal bool) (bool, *string) {
+	// Priority 1: Check transaction-specific footnotes
+	// If a footnote explicitly mentions 10b5-1, that takes precedence over everything
 	for _, fnID := range footnoteIDs {
 		if adoptionDate, exists := tenb51Map[fnID]; exists {
 			// This footnote indicates 10b5-1 plan
-			return true, adoptionDate // Returns date (may be empty string if not found in footnote)
+			if adoptionDate != "" {
+				return true, &adoptionDate
+			}
+			return true, nil // 10b5-1 plan but no date found
 		}
 	}
-	return false, ""
+
+	// Priority 2: Check if remarks should apply globally
+	// Only when aff10b5One=true AND no footnotes mention 10b5-1
+	// This handles cases like Becton Dickinson where 10b5-1 info is ONLY in remarks
+	if useRemarksGlobal {
+		if adoptionDate, exists := tenb51Map["__REMARKS__"]; exists {
+			if adoptionDate != "" {
+				return true, &adoptionDate
+			}
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
