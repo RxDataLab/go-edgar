@@ -4,9 +4,16 @@
     "notes": "Wave Life Sciences - derivative transactions (option exercises + sales), 10b5-1 plan with adoption date, complete derivative structure with exerciseDate footnote refs and underlyingSecurity"
   },
   "expected": {
-    "formType": "4",
+    "metadata": {
+      "cik": "0001631574",
+      "accessionNumber": "",
+      "formType": "4",
+      "periodOfReport": "2025-12-08",
+      "filingDate": "",
+      "reportDate": "",
+      "source": ""
+    },
     "schemaVersion": "X0508",
-    "periodOfReport": "2025-12-08",
     "has10b51Plan": true,
     "issuer": {
       "cik": "0001631574",

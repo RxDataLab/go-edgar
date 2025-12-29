@@ -13,9 +13,17 @@ import (
 func main() {
 	// Define flags
 	var (
+		// Single file mode
 		saveOriginal bool
 		outputPath   string
 		email        string
+
+		// Batch mode
+		cik              string
+		formType         string
+		dateFrom         string
+		dateTo           string
+		includePaginated bool
 	)
 
 	flag.BoolVar(&saveOriginal, "save-original", false, "Save the original XML file")
@@ -25,36 +33,55 @@ func main() {
 	flag.StringVar(&email, "email", "", "Email for SEC User-Agent header (or use SEC_EMAIL env var)")
 	flag.StringVar(&email, "e", "", "Email for SEC User-Agent (shorthand)")
 
+	// Batch mode flags
+	flag.StringVar(&cik, "cik", "", "CIK to fetch filings for (batch mode)")
+	flag.StringVar(&formType, "form", "4", "Form type to fetch (default: 4)")
+	flag.StringVar(&dateFrom, "from", "", "Start date for filtering (YYYY-MM-DD)")
+	flag.StringVar(&dateTo, "to", "", "End date for filtering (YYYY-MM-DD)")
+	flag.BoolVar(&includePaginated, "all", false, "Include all paginated filings (can be slow)")
+
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: goedgar [options] <source>\n\n")
-		fmt.Fprintf(os.Stderr, "Parse SEC forms from URL or file path.\n\n")
-		fmt.Fprintf(os.Stderr, "Arguments:\n")
-		fmt.Fprintf(os.Stderr, "  <source>    URL or file path to SEC form XML\n\n")
+		fmt.Fprintf(os.Stderr, "Usage: goedgar [options] [<source>]\n\n")
+		fmt.Fprintf(os.Stderr, "Parse SEC forms from URL, file path, or fetch by CIK.\n\n")
+		fmt.Fprintf(os.Stderr, "Modes:\n")
+		fmt.Fprintf(os.Stderr, "  Single file: goedgar [options] <source>\n")
+		fmt.Fprintf(os.Stderr, "  Batch mode:  goedgar --cik <CIK> [--form 4] [--from DATE] [--to DATE]\n\n")
 		fmt.Fprintf(os.Stderr, "Options:\n")
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
+		fmt.Fprintf(os.Stderr, "  # Single file\n")
 		fmt.Fprintf(os.Stderr, "  goedgar https://www.sec.gov/Archives/edgar/data/.../ownership.xml\n")
-		fmt.Fprintf(os.Stderr, "  goedgar ./ownership.xml\n")
-		fmt.Fprintf(os.Stderr, "  goedgar -s -o output.json https://www.sec.gov/.../ownership.xml\n")
-		fmt.Fprintf(os.Stderr, "\nEnvironment:\n")
+		fmt.Fprintf(os.Stderr, "  goedgar ./ownership.xml\n\n")
+		fmt.Fprintf(os.Stderr, "  # Batch mode\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 0000078003 --form 4 --from 2025-01-01 --to 2025-06-30\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1631574 --form 4  # All recent Form 4s\n\n")
+		fmt.Fprintf(os.Stderr, "Environment:\n")
 		fmt.Fprintf(os.Stderr, "  SEC_EMAIL    Email for SEC User-Agent header (required for URL fetching)\n")
 	}
 
 	flag.Parse()
 
-	// Check for source argument
-	if flag.NArg() < 1 {
-		fmt.Fprintf(os.Stderr, "Error: source URL or file path required\n\n")
-		flag.Usage()
-		os.Exit(1)
-	}
+	// Determine mode: batch (CIK) or single file
+	if cik != "" {
+		// Batch mode
+		if err := runBatch(cik, formType, dateFrom, dateTo, includePaginated, email, outputPath); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		// Single file mode - require source argument
+		if flag.NArg() < 1 {
+			fmt.Fprintf(os.Stderr, "Error: source URL or file path required (or use --cik for batch mode)\n\n")
+			flag.Usage()
+			os.Exit(1)
+		}
 
-	source := flag.Arg(0)
+		source := flag.Arg(0)
 
-	// Run the main logic
-	if err := run(source, email, saveOriginal, outputPath); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		if err := run(source, email, saveOriginal, outputPath); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 	}
 }
 
@@ -111,6 +138,18 @@ func run(source, email string, saveOriginal bool, outputPath string) error {
 	// Merge metadata from URL and form
 	meta := edgar.MergeMetadata(urlMeta, formMeta)
 
+	// Populate source and accession metadata in the form output
+	if form.FormType == "4" {
+		if f4, ok := form.Data.(*edgar.Form4Output); ok {
+			// Set source (URL or file path)
+			f4.SetSource(source)
+			// Set accession number if available from URL
+			if meta.Accession != "" {
+				f4.SetFilingMetadata(meta.Accession, "", "")
+			}
+		}
+	}
+
 	// Prepare save options with default output directory
 	saveOpts := edgar.SaveOptions{
 		SaveOriginal: saveOriginal,
@@ -146,6 +185,64 @@ func run(source, email string, saveOriginal bool, outputPath string) error {
 		if err != nil {
 			return fmt.Errorf("failed to format JSON: %w", err)
 		}
+		fmt.Println(string(jsonData))
+	}
+
+	return nil
+}
+
+func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, email, outputPath string) error {
+	// Get email for SEC requests
+	if email == "" {
+		var err error
+		email, err = edgar.GetSecEmail()
+		if err != nil {
+			return err
+		}
+	}
+
+	// Setup batch options
+	opts := edgar.BatchOptions{
+		CIK:              cik,
+		FormType:         formType,
+		DateFrom:         dateFrom,
+		DateTo:           dateTo,
+		Email:            email,
+		IncludePaginated: includePaginated,
+	}
+
+	// Fetch and parse batch
+	result, err := edgar.FetchAndParseBatch(opts)
+	if err != nil {
+		return err
+	}
+
+	// Print errors if any
+	if len(result.Errors) > 0 {
+		fmt.Fprintf(os.Stderr, "\nErrors encountered:\n")
+		for i, err := range result.Errors {
+			fmt.Fprintf(os.Stderr, "  %d. %v\n", i+1, err)
+			if i >= 4 { // Show max 5 errors
+				fmt.Fprintf(os.Stderr, "  ... and %d more errors\n", len(result.Errors)-5)
+				break
+			}
+		}
+		fmt.Fprintf(os.Stderr, "\n")
+	}
+
+	// Output results as JSON array
+	jsonData, err := edgar.FormatJSONBatch(result.Filings)
+	if err != nil {
+		return fmt.Errorf("failed to format JSON: %w", err)
+	}
+
+	// Write to file or stdout
+	if outputPath != "" {
+		if err := os.WriteFile(outputPath, jsonData, 0644); err != nil {
+			return fmt.Errorf("failed to write output file: %w", err)
+		}
+		fmt.Fprintf(os.Stderr, "Saved batch output: %s\n", outputPath)
+	} else {
 		fmt.Println(string(jsonData))
 	}
 

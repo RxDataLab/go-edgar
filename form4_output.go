@@ -2,9 +2,8 @@ package edgar
 
 // Form4Output represents the simplified JSON output structure
 type Form4Output struct {
-	FormType        string                        `json:"formType"`
+	Metadata        FormMetadata                  `json:"metadata"`
 	SchemaVersion   string                        `json:"schemaVersion"`
-	PeriodOfReport  string                        `json:"periodOfReport"`
 	Has10b51Plan    bool                          `json:"has10b51Plan"` // Document-level indicator
 	Issuer          IssuerOutput                  `json:"issuer"`
 	ReportingOwners []ReportingOwnerOutput        `json:"reportingOwners"`
@@ -14,6 +13,17 @@ type Form4Output struct {
 	DerivHoldings   []DerivativeHoldingOut        `json:"derivativeHoldings,omitempty"`
 	Footnotes       []FootnoteOutput              `json:"footnotes"`
 	Signatures      []SignatureOutput             `json:"signatures"`
+}
+
+// FormMetadata contains metadata about the filing
+type FormMetadata struct {
+	CIK             string `json:"cik"`
+	AccessionNumber string `json:"accessionNumber"`
+	FormType        string `json:"formType"`
+	PeriodOfReport  string `json:"periodOfReport"`
+	FilingDate      string `json:"filingDate"` // From SEC index, empty if not available
+	ReportDate      string `json:"reportDate"` // From SEC index, empty if not available
+	Source          string `json:"source"`     // URL or file path
 }
 
 type IssuerOutput struct {
@@ -117,6 +127,24 @@ type SignatureOutput struct {
 	Date string `json:"date"`
 }
 
+// SetSource sets the source field in the metadata (URL or file path)
+func (f *Form4Output) SetSource(source string) {
+	f.Metadata.Source = source
+}
+
+// SetFilingMetadata sets filing metadata fields from external sources (e.g., SEC index)
+func (f *Form4Output) SetFilingMetadata(accessionNumber, filingDate, reportDate string) {
+	if accessionNumber != "" {
+		f.Metadata.AccessionNumber = accessionNumber
+	}
+	if filingDate != "" {
+		f.Metadata.FilingDate = filingDate
+	}
+	if reportDate != "" {
+		f.Metadata.ReportDate = reportDate
+	}
+}
+
 // ToOutput converts a Form4 to the simplified output structure
 func (f *Form4) ToOutput() *Form4Output {
 	// Parse footnotes and remarks once to identify 10b5-1 plans and adoption dates
@@ -143,13 +171,20 @@ func (f *Form4) ToOutput() *Form4Output {
 	useRemarksGlobal := f.Aff10b5One && !has10b51Footnotes && tenb51Map["__REMARKS__"] != ""
 
 	out := &Form4Output{
-		FormType:        f.DocumentType,
+		Metadata: FormMetadata{
+			CIK:             f.Issuer.CIK,
+			AccessionNumber: "", // To be filled by caller if available
+			FormType:        f.DocumentType,
+			PeriodOfReport:  f.PeriodOfReport,
+			FilingDate:      "", // To be filled by caller if available
+			ReportDate:      "", // To be filled by caller if available
+			Source:          "", // To be filled by caller if available
+		},
 		SchemaVersion:   f.SchemaVersion,
-		PeriodOfReport:  f.PeriodOfReport,
 		Has10b51Plan:    f.Is10b51Plan(),
 		Issuer:          convertIssuer(f.Issuer),
 		ReportingOwners: convertReportingOwners(f.ReportingOwners),
-		Footnotes:       convertFootnotes(f.Footnotes),
+		Footnotes:       convertFootnotes(f.Footnotes, f.Remarks),
 		Signatures:      convertSignatures(f.Signatures),
 	}
 
@@ -308,7 +343,7 @@ func convertDerivHolding(holding DerivativeHolding) DerivativeHoldingOut {
 	}
 }
 
-func convertFootnotes(footnotes []Footnote) []FootnoteOutput {
+func convertFootnotes(footnotes []Footnote, remarks string) []FootnoteOutput {
 	var out []FootnoteOutput
 	for _, fn := range footnotes {
 		out = append(out, FootnoteOutput{
@@ -316,6 +351,15 @@ func convertFootnotes(footnotes []Footnote) []FootnoteOutput {
 			Text: fn.Text,
 		})
 	}
+
+	// Include remarks as a footnote with ID "REMARKS" if non-empty
+	if remarks != "" {
+		out = append(out, FootnoteOutput{
+			ID:   "REMARKS",
+			Text: remarks,
+		})
+	}
+
 	return out
 }
 

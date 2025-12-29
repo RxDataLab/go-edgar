@@ -4,9 +4,16 @@
     "notes": "Basic Form 4 test with Snowflake - validates parsing of issuer, reporting owner, address, and non-derivative transactions including exercise and sales"
   },
   "expected": {
-    "formType": "4",
+    "metadata": {
+      "cik": "0001640147",
+      "accessionNumber": "",
+      "formType": "4",
+      "periodOfReport": "2022-12-13",
+      "filingDate": "",
+      "reportDate": "",
+      "source": ""
+    },
     "schemaVersion": "X0306",
-    "periodOfReport": "2022-12-13",
     "has10b51Plan": false,
     "issuer": {
       "cik": "0001640147",

@@ -154,3 +154,8 @@ func SaveFiles(xmlData []byte, form *ParsedForm, meta *FilingMetadata, opts Save
 func FormatJSON(form *ParsedForm) ([]byte, error) {
 	return json.MarshalIndent(form, "", "  ")
 }
+
+// FormatJSONBatch returns pretty-printed JSON for an array of Form4Output
+func FormatJSONBatch(filings []*Form4Output) ([]byte, error) {
+	return json.MarshalIndent(filings, "", "  ")
+}

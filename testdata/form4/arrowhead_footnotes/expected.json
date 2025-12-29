@@ -4,9 +4,16 @@
     "notes": "Edge case: Multiple footnotes, 10b5-1 trading plan, weighted average prices, footnote references on shares/price/ownership fields"
   },
   "expected": {
-    "formType": "4",
+    "metadata": {
+      "cik": "0000879407",
+      "accessionNumber": "",
+      "formType": "4",
+      "periodOfReport": "2025-12-19",
+      "filingDate": "",
+      "reportDate": "",
+      "source": ""
+    },
     "schemaVersion": "X0508",
-    "periodOfReport": "2025-12-19",
     "has10b51Plan": true,
     "issuer": {
       "cik": "0000879407",

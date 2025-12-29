@@ -4,9 +4,16 @@
     "notes": "ProMis Neurosciences - transaction code X (Exercise of In-the-Money or At-the-Money Derivative Security), no 10b5-1 plan"
   },
   "expected": {
-    "formType": "4",
+    "metadata": {
+      "cik": "0001374339",
+      "accessionNumber": "",
+      "formType": "4",
+      "periodOfReport": "2025-07-25",
+      "filingDate": "",
+      "reportDate": "",
+      "source": ""
+    },
     "schemaVersion": "X0508",
-    "periodOfReport": "2025-07-25",
     "has10b51Plan": false,
     "issuer": {
       "cik": "0001374339",

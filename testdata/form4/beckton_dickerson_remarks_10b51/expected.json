@@ -4,9 +4,16 @@
     "notes": "Becton Dickinson - 10b5-1 plan information in \u003cremarks\u003e tag instead of footnotes, tests fallback to remarks field"
   },
   "expected": {
-    "formType": "4",
+    "metadata": {
+      "cik": "0000010795",
+      "accessionNumber": "",
+      "formType": "4",
+      "periodOfReport": "2025-12-26",
+      "filingDate": "",
+      "reportDate": "",
+      "source": ""
+    },
     "schemaVersion": "X0508",
-    "periodOfReport": "2025-12-26",
     "has10b51Plan": true,
     "issuer": {
       "cik": "0000010795",
@@ -50,7 +57,12 @@
       }
     ],
     "derivatives": null,
-    "footnotes": null,
+    "footnotes": [
+      {
+        "id": "REMARKS",
+        "text": "This reported transaction was made pursuant to a Rule 10b5-1 plan adopted by the reporting person on February 7, 2025."
+      }
+    ],
     "signatures": [
       {
         "name": "Donna Kalazdy, by power of attorney from Michael Feld",
