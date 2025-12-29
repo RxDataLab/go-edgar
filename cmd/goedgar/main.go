@@ -236,14 +236,39 @@ func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, ema
 		return fmt.Errorf("failed to format JSON: %w", err)
 	}
 
+	// Determine output path
+	// Default: save to file with smart naming (batch results are often large)
+	// Use "-o -" to explicitly output to stdout
+	if outputPath == "" {
+		// Generate filename: {dateFrom}_{dateTo}_form{formType}_{cik}.json
+		// or if no dates: form{formType}_{cik}.json
+		var filename string
+		if dateFrom != "" && dateTo != "" {
+			filename = fmt.Sprintf("%s_%s_form%s_%s.json", dateFrom, dateTo, formType, cik)
+		} else if dateFrom != "" {
+			filename = fmt.Sprintf("%s_onwards_form%s_%s.json", dateFrom, formType, cik)
+		} else if dateTo != "" {
+			filename = fmt.Sprintf("until_%s_form%s_%s.json", dateTo, formType, cik)
+		} else {
+			filename = fmt.Sprintf("form%s_%s.json", formType, cik)
+		}
+		outputPath = fmt.Sprintf("./output/%s", filename)
+
+		// Ensure output directory exists
+		if err := os.MkdirAll("./output", 0755); err != nil {
+			return fmt.Errorf("failed to create output directory: %w", err)
+		}
+	}
+
 	// Write to file or stdout
-	if outputPath != "" {
+	if outputPath == "-" {
+		// Explicit stdout request
+		fmt.Println(string(jsonData))
+	} else {
 		if err := os.WriteFile(outputPath, jsonData, 0644); err != nil {
 			return fmt.Errorf("failed to write output file: %w", err)
 		}
 		fmt.Fprintf(os.Stderr, "Saved batch output: %s\n", outputPath)
-	} else {
-		fmt.Println(string(jsonData))
 	}
 
 	return nil

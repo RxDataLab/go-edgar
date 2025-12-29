@@ -83,21 +83,28 @@ export SEC_EMAIL="your-email@example.com"
 Fetch and parse multiple filings for a company by CIK:
 
 ```bash
-# All Form 4s for a CIK in a date range
+# All Form 4s for a CIK in a date range (saves to ./output/ by default)
 export SEC_EMAIL="your-email@example.com"
 ./goedgar --cik 1601830 --form 4 --from 2025-01-01 --to 2025-06-30
-
-# Save to file
-./goedgar --cik 1601830 --form 4 --from 2025-01-01 --to 2025-06-30 -o output.json
+# Saves to: ./output/2025-01-01_2025-06-30_form4_1601830.json
 
 # All recent Form 4s (no date filter)
 ./goedgar --cik 78003 --form 4
+# Saves to: ./output/form4_78003.json
+
+# Custom output path
+./goedgar --cik 1601830 --form 4 --from 2025-01-01 --to 2025-06-30 -o my_data.json
+
+# Output to stdout (use -o -)
+./goedgar --cik 1601830 --form 4 --from 2025-01-01 --to 2025-06-30 -o -
 
 # Include all historical filings (with pagination)
 ./goedgar --cik 78003 --form 4 --all
 ```
 
 **Batch mode features:**
+- Automatically saves to `./output/` with smart naming by default
+- Filename format: `{dateFrom}_{dateTo}_form{formType}_{cik}.json`
 - Automatically fetches company submissions index
 - Filters by form type and date range
 - Handles pagination for companies with many filings
@@ -532,8 +539,8 @@ go-edgar/
 ├── testdata/
 │   ├── form4/            # Form 4 test cases with ground truth
 │   └── cik/              # CIK JSON test data
-├── form4.go              # Core parsing logic
-├── form4_output.go       # JSON output format
+├── form4.go              # Core Form 4 parsing logic
+├── form4_output.go       # Form 4 JSON output format
 ├── tenb51.go             # 10b5-1 detection logic
 ├── fetcher.go            # SEC HTTP client
 ├── parser.go             # Auto-detection and dispatch
