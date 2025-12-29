@@ -539,15 +539,23 @@ go-edgar/
 ├── testdata/
 │   ├── form4/            # Form 4 test cases with ground truth
 │   └── cik/              # CIK JSON test data
-├── form4.go              # Core Form 4 parsing logic
+│
+├── Form-specific files (form{N}_*.go pattern):
+├── form4.go              # Form 4 parsing logic
 ├── form4_output.go       # Form 4 JSON output format
-├── tenb51.go             # 10b5-1 detection logic
+├── form4_tenb51.go       # Form 4 10b5-1 detection
+│
+├── Common/general-purpose files:
 ├── fetcher.go            # SEC HTTP client
 ├── parser.go             # Auto-detection and dispatch
 ├── metadata.go           # File naming and metadata
 ├── submissions.go        # CIK JSON parsing and filtering
 └── batch.go              # Batch download orchestration
 ```
+
+Files are organized using a naming convention:
+- `form{N}_*.go` - Form-specific parsing and logic
+- Other files - Common utilities for all forms
 
 ### Building
 
