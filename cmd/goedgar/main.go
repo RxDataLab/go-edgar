@@ -17,6 +17,7 @@ func main() {
 		saveOriginal bool
 		outputPath   string
 		email        string
+		pretty       bool
 
 		// Batch mode
 		cik              string
@@ -26,12 +27,13 @@ func main() {
 		includePaginated bool
 	)
 
-	flag.BoolVar(&saveOriginal, "save-original", false, "Save the original XML file")
-	flag.BoolVar(&saveOriginal, "s", false, "Save the original XML file (shorthand)")
+	flag.BoolVar(&saveOriginal, "save-original", false, "Save the original XML/HTML file")
+	flag.BoolVar(&saveOriginal, "s", false, "Save the original XML/HTML file (shorthand)")
 	flag.StringVar(&outputPath, "output", "", "Output JSON file path (default: stdout)")
 	flag.StringVar(&outputPath, "o", "", "Output JSON file path (shorthand)")
 	flag.StringVar(&email, "email", "", "Email for SEC User-Agent header (or use SEC_EMAIL env var)")
 	flag.StringVar(&email, "e", "", "Email for SEC User-Agent (shorthand)")
+	flag.BoolVar(&pretty, "pretty", false, "Pretty print table output (XBRL only)")
 
 	// Batch mode flags
 	flag.StringVar(&cik, "cik", "", "CIK to fetch filings for (batch mode)")
@@ -52,9 +54,13 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  # Single file\n")
 		fmt.Fprintf(os.Stderr, "  goedgar https://www.sec.gov/Archives/edgar/data/.../ownership.xml\n")
 		fmt.Fprintf(os.Stderr, "  goedgar ./ownership.xml\n\n")
-		fmt.Fprintf(os.Stderr, "  # Batch mode\n")
+		fmt.Fprintf(os.Stderr, "  # Batch mode (Form 4)\n")
 		fmt.Fprintf(os.Stderr, "  goedgar --cik 0000078003 --form 4 --from 2025-01-01 --to 2025-06-30\n")
 		fmt.Fprintf(os.Stderr, "  goedgar --cik 1631574 --form 4  # All recent Form 4s\n\n")
+		fmt.Fprintf(os.Stderr, "  # 10-K/10-Q (XBRL)\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1682852 --form 10-K  # Latest 10-K\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1682852 --form 10-K --from 2023-01-01  # All 10-Ks from 2023\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1682852 --form 10-Q --pretty  # Latest 10-Q with table\n\n")
 		fmt.Fprintf(os.Stderr, "Environment:\n")
 		fmt.Fprintf(os.Stderr, "  SEC_EMAIL    Email for SEC User-Agent header (required for URL fetching)\n")
 	}
@@ -78,14 +84,14 @@ func main() {
 
 		source := flag.Arg(0)
 
-		if err := run(source, email, saveOriginal, outputPath); err != nil {
+		if err := run(source, email, saveOriginal, outputPath, pretty); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
 	}
 }
 
-func run(source, email string, saveOriginal bool, outputPath string) error {
+func run(source, email string, saveOriginal bool, outputPath string, pretty bool) error {
 	// Determine if source is URL or file path
 	isURL := strings.HasPrefix(source, "http://") || strings.HasPrefix(source, "https://")
 
@@ -179,8 +185,30 @@ func run(source, email string, saveOriginal bool, outputPath string) error {
 		}
 	}
 
-	// If no output file specified, print JSON to stdout
+	// Check for missing required fields (XBRL only)
+	if form.FormType == "XBRL" {
+		if snapshot, ok := form.Data.(*edgar.FinancialSnapshot); ok {
+			if len(snapshot.MissingRequiredFields) > 0 {
+				fmt.Fprintf(os.Stderr, "\n⚠️  Warning: Missing %d required GAAP field(s):\n", len(snapshot.MissingRequiredFields))
+				for _, field := range snapshot.MissingRequiredFields {
+					fmt.Fprintf(os.Stderr, "  - %s\n", field)
+				}
+				fmt.Fprintf(os.Stderr, "This may indicate incorrect concept mappings in concept_mappings.json\n\n")
+			}
+		}
+	}
+
+	// If no output file specified, print to stdout
 	if outputPath == "" && !saveOriginal {
+		// For XBRL, optionally print pretty table
+		if form.FormType == "XBRL" && pretty {
+			if snapshot, ok := form.Data.(*edgar.FinancialSnapshot); ok {
+				printXBRLTable(snapshot)
+				return nil
+			}
+		}
+
+		// Default: JSON output
 		jsonData, err := edgar.FormatJSON(form)
 		if err != nil {
 			return fmt.Errorf("failed to format JSON: %w", err)
@@ -189,6 +217,63 @@ func run(source, email string, saveOriginal bool, outputPath string) error {
 	}
 
 	return nil
+}
+
+func printXBRLTable(snapshot *edgar.FinancialSnapshot) {
+	fmt.Println()
+	fmt.Println("═══════════════════════════════════════════════════")
+	if snapshot.CompanyName != "" {
+		fmt.Printf("  %s\n", snapshot.CompanyName)
+	}
+	fmt.Println("           Financial Snapshot")
+	fmt.Println("═══════════════════════════════════════════════════")
+	if snapshot.FiscalYearEnd != "" {
+		fmt.Printf("Fiscal Year End: %s", snapshot.FiscalYearEnd)
+		if snapshot.FiscalPeriod != "" {
+			fmt.Printf(" (%s)", snapshot.FiscalPeriod)
+		}
+		fmt.Println()
+	}
+	if snapshot.FormType != "" {
+		fmt.Printf("Form Type: %s\n", snapshot.FormType)
+	}
+	fmt.Println()
+
+	fmt.Printf("%-35s %15s\n", "Metric", "Value")
+	fmt.Printf("%-35s %15s\n", "─────────────────────────────────", "──────────────")
+
+	printMetric("Cash & Equivalents", snapshot.Cash)
+	printMetric("Total Debt", snapshot.TotalDebt)
+	printMetric("Revenue", snapshot.Revenue)
+	printMetric("Net Income (Loss)", snapshot.NetIncome)
+	printMetric("R&D Expense", snapshot.RDExpense)
+	printMetric("G&A Expense", snapshot.GAExpense)
+
+	if snapshot.DilutedShares > 0 {
+		millions := snapshot.DilutedShares / 1_000_000
+		fmt.Printf("%-35s %12.1fM\n", "Diluted Shares", millions)
+	}
+
+	fmt.Println("═══════════════════════════════════════════════════")
+	fmt.Println()
+}
+
+func printMetric(label string, value float64) {
+	if value == 0 {
+		fmt.Printf("%-35s %15s\n", label, "$0")
+		return
+	}
+
+	billions := value / 1_000_000_000
+	millions := value / 1_000_000
+
+	if billions >= 1 {
+		fmt.Printf("%-35s %12.2fB\n", label, billions)
+	} else if millions >= 1 {
+		fmt.Printf("%-35s %12.1fM\n", label, millions)
+	} else {
+		fmt.Printf("%-35s %15.0f\n", label, value)
+	}
 }
 
 func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, email, outputPath string) error {
@@ -228,6 +313,33 @@ func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, ema
 			}
 		}
 		fmt.Fprintf(os.Stderr, "\n")
+	}
+
+	// Check for missing required fields in XBRL filings
+	if formType == "10-K" || formType == "10-Q" {
+		filingsWithMissingFields := 0
+		allMissingFields := make(map[string]int) // field name -> count
+
+		for _, filing := range result.Filings {
+			if filing.FormType == "XBRL" {
+				if snapshot, ok := filing.Data.(*edgar.FinancialSnapshot); ok {
+					if len(snapshot.MissingRequiredFields) > 0 {
+						filingsWithMissingFields++
+						for _, field := range snapshot.MissingRequiredFields {
+							allMissingFields[field]++
+						}
+					}
+				}
+			}
+		}
+
+		if filingsWithMissingFields > 0 {
+			fmt.Fprintf(os.Stderr, "\n⚠️  Warning: %d filing(s) missing required GAAP fields:\n", filingsWithMissingFields)
+			for field, count := range allMissingFields {
+				fmt.Fprintf(os.Stderr, "  - %s (missing in %d filing(s))\n", field, count)
+			}
+			fmt.Fprintf(os.Stderr, "This may indicate incorrect concept mappings in concept_mappings.json\n\n")
+		}
 	}
 
 	// Output results as JSON array

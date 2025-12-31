@@ -1,0 +1,11 @@
+{
+  "company": "Moderna, Inc.",
+  "cik": "0001682852",
+  "form": "10-K",
+  "filing_date": "2025-02-21",
+  "report_date": "2024-12-31",
+  "accession": "0001682852-25-000022",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1682852/000168285225000022/mrna-20241231.htm",
+  "is_inline_xbrl": true,
+  "notes": "Moderna 10-K for testing XBRL parsing - biotech company with R&D focus"
+}

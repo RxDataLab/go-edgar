@@ -18,16 +18,16 @@ type BatchOptions struct {
 
 // BatchResult contains the results of a batch operation
 type BatchResult struct {
-	Filings    []*Form4Output
-	TotalFound int     // Total filings matching criteria
-	Fetched    int     // Number actually downloaded and parsed
-	Errors     []error // Any errors encountered during processing
+	Filings    []*ParsedForm // Generic parsed forms (Form 4, XBRL, etc.)
+	TotalFound int           // Total filings matching criteria
+	Fetched    int           // Number actually downloaded and parsed
+	Errors     []error       // Any errors encountered during processing
 }
 
 // FetchAndParseBatch fetches all filings for a CIK matching the criteria and parses them
 func FetchAndParseBatch(opts BatchOptions) (*BatchResult, error) {
 	result := &BatchResult{
-		Filings: make([]*Form4Output, 0),
+		Filings: make([]*ParsedForm, 0),
 		Errors:  make([]error, 0),
 	}
 
@@ -115,24 +115,16 @@ func FetchAndParseBatch(opts BatchOptions) (*BatchResult, error) {
 			continue
 		}
 
-		// Ensure it's a Form 4
-		if parsed.FormType != "4" {
-			continue
+		// Add metadata to the parsed form based on type
+		if parsed.FormType == "4" {
+			if form4Output, ok := parsed.Data.(*Form4Output); ok {
+				form4Output.SetSource(filing.URL)
+				form4Output.SetFilingMetadata(filing.AccessionNumber, filing.FilingDate, filing.ReportDate)
+			}
 		}
+		// For XBRL (10-K, 10-Q), metadata is in the snapshot itself
 
-		// Get the Form4Output
-		form4Output, ok := parsed.Data.(*Form4Output)
-		if !ok {
-			errMsg := fmt.Errorf("unexpected data type for %s", filing.AccessionNumber)
-			result.Errors = append(result.Errors, errMsg)
-			continue
-		}
-
-		// Populate metadata from the filing index
-		form4Output.SetSource(filing.URL)
-		form4Output.SetFilingMetadata(filing.AccessionNumber, filing.FilingDate, filing.ReportDate)
-
-		result.Filings = append(result.Filings, form4Output)
+		result.Filings = append(result.Filings, parsed)
 		result.Fetched++
 	}
 

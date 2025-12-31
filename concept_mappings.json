@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "XBRL concept mappings for standardizing financial statement line items. Each key is a standardized label, and the value is an array of XBRL concept names that map to it. Focused on biotech/pharma companies.",
+  "version": "0.2.0",
+  "requiredFields": [
+    "Total Assets",
+    "Total Liabilities",
+    "Stockholders Equity",
+    "Revenue",
+    "Net Income (Loss)",
+    "Cash Flow from Operations",
+    "Shares Outstanding (Diluted)"
+  ],
+  "mappings": {
+    "Cash and Cash Equivalents": {
+      "concepts": [
+        "us-gaap:CashAndCashEquivalentsAtCarryingValue",
+        "us-gaap:Cash",
+        "us-gaap:CashAndCashEquivalents",
+        "us-gaap:CashCashEquivalentsAndShortTermInvestments"
+      ],
+      "notes": "Primary liquidity measure. Some companies include short-term investments."
+    },
+    "Research and Development Expense": {
+      "concepts": [
+        "us-gaap:ResearchAndDevelopmentExpense",
+        "us-gaap:ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost",
+        "us-gaap:ResearchAndDevelopmentCosts"
+      ],
+      "notes": "Core metric for biotech burn rate. Excludes IPR&D write-offs in second variant."
+    },
+    "General and Administrative Expense": {
+      "concepts": [
+        "us-gaap:GeneralAndAdministrativeExpense",
+        "us-gaap:SellingGeneralAndAdministrativeExpense"
+      ],
+      "notes": "G&A or SG&A depending on company stage (pre-commercial vs commercial)."
+    },
+    "Selling and Marketing Expense": {
+      "concepts": [
+        "us-gaap:SellingAndMarketingExpense",
+        "us-gaap:SellingExpense"
+      ],
+      "notes": "Commercial stage companies break out sales/marketing separately."
+    },
+    "Total Operating Expenses": {
+      "concepts": [
+        "us-gaap:OperatingExpenses",
+        "us-gaap:CostsAndExpenses"
+      ],
+      "notes": "Sum of R&D + G&A + COGS for burn calculation."
+    },
+    "Long-Term Debt": {
+      "concepts": [
+        "us-gaap:LongTermDebt",
+        "us-gaap:LongTermDebtNoncurrent",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligations"
+      ],
+      "notes": "Non-current portion of debt. May include capital leases."
+    },
+    "Short-Term Debt": {
+      "concepts": [
+        "us-gaap:DebtCurrent",
+        "us-gaap:ShortTermBorrowings",
+        "us-gaap:LongTermDebtCurrent",
+        "us-gaap:LongTermDebtAndCapitalLeaseObligationsCurrent"
+      ],
+      "notes": "Current portion of long-term debt + short-term borrowings."
+    },
+    "Shares Outstanding (Basic)": {
+      "concepts": [
+        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+        "us-gaap:CommonStockSharesOutstanding"
+      ],
+      "notes": "Basic share count. Weighted average for income statement, point-in-time for balance sheet."
+    },
+    "Shares Outstanding (Diluted)": {
+      "concepts": [
+        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding",
+        "us-gaap:WeightedAverageNumberOfSharesOutstandingDilutedDiscontinuedOperations"
+      ],
+      "notes": "Diluted share count including options, warrants, convertible debt."
+    },
+    "Revenue": {
+      "concepts": [
+        "us-gaap:Revenues",
+        "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+        "us-gaap:SalesRevenueNet",
+        "us-gaap:RevenueFromContractWithCustomerIncludingAssessedTax"
+      ],
+      "notes": "Total revenue. Many pre-commercial biotechs have $0 revenue."
+    },
+    "Net Income (Loss)": {
+      "concepts": [
+        "us-gaap:NetIncomeLoss",
+        "us-gaap:ProfitLoss"
+      ],
+      "notes": "Bottom line. Usually negative for pre-commercial biotechs."
+    },
+    "Total Assets": {
+      "concepts": [
+        "us-gaap:Assets"
+      ],
+      "notes": "Total assets from balance sheet."
+    },
+    "Total Liabilities": {
+      "concepts": [
+        "us-gaap:Liabilities"
+      ],
+      "notes": "Total liabilities from balance sheet."
+    },
+    "Stockholders Equity": {
+      "concepts": [
+        "us-gaap:StockholdersEquity",
+        "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+      ],
+      "notes": "Shareholder equity. Important for runway calculations."
+    },
+    "Cost of Revenue": {
+      "concepts": [
+        "us-gaap:CostOfRevenue",
+        "us-gaap:CostOfGoodsAndServicesSold",
+        "us-gaap:CostOfGoodsSold"
+      ],
+      "notes": "COGS. Many pre-commercial biotechs have $0."
+    },
+    "Gross Profit": {
+      "concepts": [
+        "us-gaap:GrossProfit"
+      ],
+      "notes": "Revenue - COGS. May not be reported if pre-commercial."
+    },
+    "Operating Income (Loss)": {
+      "concepts": [
+        "us-gaap:OperatingIncomeLoss",
+        "us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest"
+      ],
+      "notes": "Income from operations before taxes."
+    },
+    "Interest Expense": {
+      "concepts": [
+        "us-gaap:InterestExpense",
+        "us-gaap:InterestExpenseDebt"
+      ],
+      "notes": "Interest paid on debt."
+    },
+    "Income Tax Expense": {
+      "concepts": [
+        "us-gaap:IncomeTaxExpenseBenefit"
+      ],
+      "notes": "Tax expense/benefit."
+    },
+    "Cash Flow from Operations": {
+      "concepts": [
+        "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+      ],
+      "notes": "Operating cash flow - critical for burn analysis."
+    },
+    "Cash Flow from Investing": {
+      "concepts": [
+        "us-gaap:NetCashProvidedByUsedInInvestingActivities"
+      ],
+      "notes": "Investing activities cash flow."
+    },
+    "Cash Flow from Financing": {
+      "concepts": [
+        "us-gaap:NetCashProvidedByUsedInFinancingActivities"
+      ],
+      "notes": "Financing activities cash flow (fundraising)."
+    },
+    "Capital Expenditures": {
+      "concepts": [
+        "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment"
+      ],
+      "notes": "Capex - facility/equipment purchases."
+    },
+    "Depreciation and Amortization": {
+      "concepts": [
+        "us-gaap:DepreciationDepletionAndAmortization",
+        "us-gaap:Depreciation",
+        "us-gaap:DepreciationAndAmortization"
+      ],
+      "notes": "D&A expense."
+    },
+    "Stock-Based Compensation": {
+      "concepts": [
+        "us-gaap:AllocatedShareBasedCompensationExpense",
+        "us-gaap:ShareBasedCompensation"
+      ],
+      "notes": "Stock-based comp expense."
+    },
+    "Accounts Receivable": {
+      "concepts": [
+        "us-gaap:AccountsReceivableNetCurrent"
+      ],
+      "notes": "A/R for commercial-stage companies."
+    },
+    "Inventory": {
+      "concepts": [
+        "us-gaap:InventoryNet"
+      ],
+      "notes": "Inventory for commercial-stage companies."
+    },
+    "Prepaid Expenses": {
+      "concepts": [
+        "us-gaap:PrepaidExpenseAndOtherAssetsCurrent"
+      ],
+      "notes": "Prepaid expenses and other current assets."
+    },
+    "Property Plant and Equipment": {
+      "concepts": [
+        "us-gaap:PropertyPlantAndEquipmentNet"
+      ],
+      "notes": "PP&E net of depreciation."
+    },
+    "Intangible Assets": {
+      "concepts": [
+        "us-gaap:IntangibleAssetsNetExcludingGoodwill",
+        "us-gaap:FiniteLivedIntangibleAssetsNet"
+      ],
+      "notes": "Intangible assets (patents, licenses)."
+    },
+    "Goodwill": {
+      "concepts": [
+        "us-gaap:Goodwill"
+      ],
+      "notes": "Goodwill from acquisitions."
+    },
+    "Accounts Payable": {
+      "concepts": [
+        "us-gaap:AccountsPayableCurrent"
+      ],
+      "notes": "Current A/P."
+    },
+    "Accrued Liabilities": {
+      "concepts": [
+        "us-gaap:AccruedLiabilitiesCurrent",
+        "us-gaap:OtherLiabilitiesCurrent"
+      ],
+      "notes": "Accrued expenses and other current liabilities."
+    },
+    "Deferred Revenue": {
+      "concepts": [
+        "us-gaap:DeferredRevenue",
+        "us-gaap:ContractWithCustomerLiabilityCurrent"
+      ],
+      "notes": "Deferred/unearned revenue."
+    },
+    "Accumulated Deficit": {
+      "concepts": [
+        "us-gaap:RetainedEarningsAccumulatedDeficit"
+      ],
+      "notes": "Accumulated deficit (negative retained earnings)."
+    },
+    "Common Stock Shares Outstanding": {
+      "concepts": [
+        "us-gaap:CommonStockSharesOutstanding"
+      ],
+      "notes": "Common shares outstanding (point in time)."
+    },
+    "EPS Basic": {
+      "concepts": [
+        "us-gaap:EarningsPerShareBasic"
+      ],
+      "notes": "Basic earnings per share."
+    },
+    "EPS Diluted": {
+      "concepts": [
+        "us-gaap:EarningsPerShareDiluted"
+      ],
+      "notes": "Diluted earnings per share."
+    }
+  }
+}

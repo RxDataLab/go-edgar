@@ -20,7 +20,30 @@ func ParseAny(r io.Reader) (*ParsedForm, error) {
 		return nil, fmt.Errorf("failed to read input: %w", err)
 	}
 
-	// Detect form type by checking root element
+	// First check if it's XBRL (10-K, 10-Q, etc.)
+	xbrlType := DetectXBRLType(data)
+	if xbrlType == "inline" || xbrlType == "standalone" {
+		// Parse XBRL
+		xbrl, err := ParseXBRLAuto(data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse XBRL: %w", err)
+		}
+
+		// Extract snapshot
+		snapshot, err := xbrl.GetSnapshot()
+		if err != nil {
+			return nil, fmt.Errorf("failed to extract financial snapshot: %w", err)
+		}
+
+		// Determine form type from XBRL (10-K, 10-Q, etc.)
+		// For now, just return as "10-K/10-Q" - we could extract this from DEI facts
+		return &ParsedForm{
+			FormType: "XBRL",
+			Data:     snapshot,
+		}, nil
+	}
+
+	// Not XBRL, try ownership forms (Form 4, etc.)
 	formType, err := detectFormType(data)
 	if err != nil {
 		return nil, err

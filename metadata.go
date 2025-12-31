@@ -155,7 +155,12 @@ func FormatJSON(form *ParsedForm) ([]byte, error) {
 	return json.MarshalIndent(form, "", "  ")
 }
 
-// FormatJSONBatch returns pretty-printed JSON for an array of Form4Output
-func FormatJSONBatch(filings []*Form4Output) ([]byte, error) {
-	return json.MarshalIndent(filings, "", "  ")
+// FormatJSONBatch returns pretty-printed JSON for an array of ParsedForms
+func FormatJSONBatch(filings []*ParsedForm) ([]byte, error) {
+	// Extract just the data from each parsed form
+	data := make([]interface{}, len(filings))
+	for i, f := range filings {
+		data[i] = f.Data
+	}
+	return json.MarshalIndent(data, "", "  ")
 }
