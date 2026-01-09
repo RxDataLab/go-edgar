@@ -2,7 +2,7 @@
 
 ## Goal
 
-Extract SEC form data (Form 4, and eventually other forms) from XML filings into Go structs.
+Extract SEC form data (Form 4, Schedule 13D/G, and eventually other forms) from XML filings into Go structs.
 
 **Dual-purpose design:**
 - **Library**: Import and use programmatically in other Go tools
@@ -29,6 +29,8 @@ go-edgar/
 ├── form4_output.go         # Form 4 JSON output format
 ├── form4_tenb51.go         # Form 4 10b5-1 detection logic
 ├── form4_test.go           # Data-driven tests
+├── schedule13.go           # Schedule 13D/G parsing logic & data structures
+├── schedule13_test.go      # Schedule 13D/G tests
 ├── xbrl.go                 # XBRL core structs (Fact, Context, Period, Unit)
 ├── xbrl_ixbrl.go           # Inline XBRL (iXBRL) parser
 ├── xbrl_concepts.go        # Concept mapping system (XBRL → standardized labels)
@@ -49,11 +51,16 @@ go-edgar/
 │   └── xbrl/               # XBRL test cases
 │       └── moderna_10k/    # Moderna FY2024 10-K (inline XBRL)
 ├── output/                 # Default output directory for CLI
+├── scripts/                # Validation & testing scripts
+│   ├── generate_edgartools_reference.py
+│   ├── fetch_tiingo.py
+│   └── fetch_alphavantage.sh
 ├── go.mod                  # Go module definition
 ├── Makefile                # Build automation
 ├── CLAUDE.md               # This file (AI context)
 ├── README.md               # User-facing docs
 ├── TESTING.md              # Detailed testing documentation
+├── TESTING_VALIDATION.md   # Cross-validation methodology
 └── XBRL.md                 # XBRL parsing documentation
 ```
 
@@ -96,7 +103,20 @@ go-edgar/
 - [x] Comprehensive documentation (XBRL.md)
 - [x] Easy to extend (add mappings to JSON, no code changes)
 
-**Phase 5: Polish** (future)
+**Phase 5: Schedule 13D/G Support** ✅ COMPLETE
+- [x] Core data structures for 13D and 13G filings
+- [x] Schedule 13D parser with all 7 items (including Item 4 - activist intent)
+- [x] Schedule 13G parser with all 10 items (including Item 10 - passive certification)
+- [x] Amendment detection and tracking (/A suffix, amendment numbers)
+- [x] Joint filer aggregation logic (memberOfGroup field, no double-counting)
+- [x] Auto-detection via XML namespace
+- [x] CLI integration with JSON output
+- [x] Comprehensive test suite (edgartools reference data)
+- [x] Handle missing CIKs (foreign entities, fallback to filer CIK)
+- [x] Edge cases: element name differences (13D vs 13G)
+- [ ] HTML parser for legacy filings (pre-2018)
+
+**Phase 6: Polish** (future)
 - [ ] CSV export
 - [ ] Validation
 - [ ] Performance optimization
@@ -165,6 +185,36 @@ export SEC_EMAIL="your-email@example.com"
 - Saves as: `./output/1631574-0001193125-25-314736_ownership.xml` and `.json`
 
 ## Recent Updates
+
+**2026-01-05: Schedule 13D/G Implementation**
+- ✅ Complete parsing for SEC Schedule 13D and 13G filings (XML format)
+- ✅ Comprehensive data extraction:
+  - Issuer information (CIK, name, CUSIP)
+  - Reporting persons (CIK, name, ownership, voting/dispositive powers)
+  - All narrative items (13D: Items 1-7, 13G: Items 1-10)
+- ✅ Amendment tracking with number extraction
+- ✅ Joint filer aggregation (memberOfGroup="a" handling)
+- ✅ Auto-detection via XML namespace (http://www.sec.gov/edgar/schedule13D vs schedule13g)
+- ✅ CLI integration with JSON output
+- ✅ Edge case handling:
+  - Missing CIKs (fallback to filer CIK)
+  - Foreign entities (noCIK flag)
+  - Element name differences (percentOfClass vs classPercent)
+  - Amendment number variations
+- ✅ Comprehensive test suite (all tests passing)
+- ⏳ HTML parser for legacy filings (Julian Baker's 2014-2017 filings use HTML)
+
+**Key Features:**
+- **Track activist campaigns**: Item 4 (Purpose of Transaction) captures activist intent
+- **Detect strategy shifts**: Identify 13G → 13D transitions (passive → activist)
+- **Accurate ownership**: Joint filer logic prevents double-counting
+- **Amendment history**: Track ownership changes over time
+
+**Files Added:**
+- `schedule13.go` (637 lines) - Core parsing and data structures
+- `schedule13_test.go` (307 lines) - Comprehensive tests
+- Updated `parser.go` - Auto-detection for 13D/G forms
+- `parser_test.go` - Form detection tests
 
 **2025-12-31: 10-K/10-Q XBRL Parsing Implementation**
 - ✅ Implemented inline XBRL (iXBRL) parser for modern SEC filings
@@ -248,6 +298,29 @@ export SEC_EMAIL="your-email@example.com"
 - **Automatic validation**: Identifies missing required fields that indicate incorrect tag mappings
 - **Easy extensibility**: Add new concepts to JSON, GetSnapshot() auto-populates
 - **Backward compatible**: All existing code continues to work
+
+**2025-12-31: Value Validation Framework** 📋 PLANNED
+- 📋 Documented cross-validation methodology against 3 independent sources:
+  - **edgartools** (Python reference implementation)
+  - **Alpha Vantage** (commercial XBRL parser)
+  - **Tiingo** (commercial fundamental data provider)
+- 📋 Created test company matrix (10 biotechs with diverse reporting styles)
+- 📋 Designed comparison pipeline with ±1% tolerance
+- 📋 Identified key edge cases:
+  - Foreign filers (ADRs)
+  - Pre-revenue companies ($0 revenue)
+  - Recent IPOs (incomplete data)
+  - Acquisitions/restructuring (goodwill, intangibles)
+  - Stock splits (share count adjustments)
+  - Quarterly vs annual (YTD context selection)
+- 📋 Automated validation workflow (GitHub Actions ready)
+- 📋 See `TESTING_VALIDATION.md` for complete methodology
+
+**Implementation Status:**
+- ✅ Documentation complete
+- ⏳ Scripts to be created (generate_edgartools_reference.py, fetch_tiingo.py, compare.py)
+- ⏳ Test data directory structure (testdata/validation/)
+- ⏳ GitHub Actions workflow (.github/workflows/validate-xbrl.yml)
 
 ## Next Steps
 

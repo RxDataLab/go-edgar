@@ -164,3 +164,8 @@ func FormatJSONBatch(filings []*ParsedForm) ([]byte, error) {
 	}
 	return json.MarshalIndent(data, "", "  ")
 }
+
+// FormatFilingListJSON returns pretty-printed JSON for an array of Filing metadata
+func FormatFilingListJSON(filings []Filing) ([]byte, error) {
+	return json.MarshalIndent(filings, "", "  ")
+}

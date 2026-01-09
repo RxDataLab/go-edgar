@@ -25,6 +25,7 @@ func main() {
 		dateFrom         string
 		dateTo           string
 		includePaginated bool
+		listOnly         bool
 	)
 
 	flag.BoolVar(&saveOriginal, "save-original", false, "Save the original XML/HTML file")
@@ -41,6 +42,7 @@ func main() {
 	flag.StringVar(&dateFrom, "from", "", "Start date for filtering (YYYY-MM-DD)")
 	flag.StringVar(&dateTo, "to", "", "End date for filtering (YYYY-MM-DD)")
 	flag.BoolVar(&includePaginated, "all", false, "Include all paginated filings (can be slow)")
+	flag.BoolVar(&listOnly, "list-only", false, "List filings without downloading/parsing (batch mode only)")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: goedgar [options] [<source>]\n\n")
@@ -57,6 +59,12 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  # Batch mode (Form 4)\n")
 		fmt.Fprintf(os.Stderr, "  goedgar --cik 0000078003 --form 4 --from 2025-01-01 --to 2025-06-30\n")
 		fmt.Fprintf(os.Stderr, "  goedgar --cik 1631574 --form 4  # All recent Form 4s\n\n")
+		fmt.Fprintf(os.Stderr, "  # Schedule 13D/G (includes amendments 13D/A, 13G/A)\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1496099 --form 13D  # All 13D filings (includes 13D/A)\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1496099 --form 13G --list-only  # List 13G filings without parsing\n\n")
+		fmt.Fprintf(os.Stderr, "  # List mode (just show URLs, don't parse)\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1631574 --form 4 --list-only\n")
+		fmt.Fprintf(os.Stderr, "  goedgar --cik 1682852 --form 10-K --from 2023-01-01 --list-only\n\n")
 		fmt.Fprintf(os.Stderr, "  # 10-K/10-Q (XBRL)\n")
 		fmt.Fprintf(os.Stderr, "  goedgar --cik 1682852 --form 10-K  # Latest 10-K\n")
 		fmt.Fprintf(os.Stderr, "  goedgar --cik 1682852 --form 10-K --from 2023-01-01  # All 10-Ks from 2023\n")
@@ -70,7 +78,7 @@ func main() {
 	// Determine mode: batch (CIK) or single file
 	if cik != "" {
 		// Batch mode
-		if err := runBatch(cik, formType, dateFrom, dateTo, includePaginated, email, outputPath); err != nil {
+		if err := runBatch(cik, formType, dateFrom, dateTo, includePaginated, listOnly, email, outputPath); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
@@ -276,7 +284,7 @@ func printMetric(label string, value float64) {
 	}
 }
 
-func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, email, outputPath string) error {
+func runBatch(cik, formType, dateFrom, dateTo string, includePaginated, listOnly bool, email, outputPath string) error {
 	// Get email for SEC requests
 	if email == "" {
 		var err error
@@ -294,6 +302,7 @@ func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, ema
 		DateTo:           dateTo,
 		Email:            email,
 		IncludePaginated: includePaginated,
+		ListOnly:         listOnly,
 	}
 
 	// Fetch and parse batch
@@ -315,37 +324,47 @@ func runBatch(cik, formType, dateFrom, dateTo string, includePaginated bool, ema
 		fmt.Fprintf(os.Stderr, "\n")
 	}
 
-	// Check for missing required fields in XBRL filings
-	if formType == "10-K" || formType == "10-Q" {
-		filingsWithMissingFields := 0
-		allMissingFields := make(map[string]int) // field name -> count
+	// Handle list-only output (just filing metadata)
+	var jsonData []byte
+	if listOnly {
+		// Output filing list as JSON
+		jsonData, err = edgar.FormatFilingListJSON(result.FilingList)
+		if err != nil {
+			return fmt.Errorf("failed to format filing list JSON: %w", err)
+		}
+	} else {
+		// Check for missing required fields in XBRL filings
+		if formType == "10-K" || formType == "10-Q" {
+			filingsWithMissingFields := 0
+			allMissingFields := make(map[string]int) // field name -> count
 
-		for _, filing := range result.Filings {
-			if filing.FormType == "XBRL" {
-				if snapshot, ok := filing.Data.(*edgar.FinancialSnapshot); ok {
-					if len(snapshot.MissingRequiredFields) > 0 {
-						filingsWithMissingFields++
-						for _, field := range snapshot.MissingRequiredFields {
-							allMissingFields[field]++
+			for _, filing := range result.Filings {
+				if filing.FormType == "XBRL" {
+					if snapshot, ok := filing.Data.(*edgar.FinancialSnapshot); ok {
+						if len(snapshot.MissingRequiredFields) > 0 {
+							filingsWithMissingFields++
+							for _, field := range snapshot.MissingRequiredFields {
+								allMissingFields[field]++
+							}
 						}
 					}
 				}
 			}
-		}
 
-		if filingsWithMissingFields > 0 {
-			fmt.Fprintf(os.Stderr, "\n⚠️  Warning: %d filing(s) missing required GAAP fields:\n", filingsWithMissingFields)
-			for field, count := range allMissingFields {
-				fmt.Fprintf(os.Stderr, "  - %s (missing in %d filing(s))\n", field, count)
+			if filingsWithMissingFields > 0 {
+				fmt.Fprintf(os.Stderr, "\n⚠️  Warning: %d filing(s) missing required GAAP fields:\n", filingsWithMissingFields)
+				for field, count := range allMissingFields {
+					fmt.Fprintf(os.Stderr, "  - %s (missing in %d filing(s))\n", field, count)
+				}
+				fmt.Fprintf(os.Stderr, "This may indicate incorrect concept mappings in concept_mappings.json\n\n")
 			}
-			fmt.Fprintf(os.Stderr, "This may indicate incorrect concept mappings in concept_mappings.json\n\n")
 		}
-	}
 
-	// Output results as JSON array
-	jsonData, err := edgar.FormatJSONBatch(result.Filings)
-	if err != nil {
-		return fmt.Errorf("failed to format JSON: %w", err)
+		// Output results as JSON array of parsed forms
+		jsonData, err = edgar.FormatJSONBatch(result.Filings)
+		if err != nil {
+			return fmt.Errorf("failed to format JSON: %w", err)
+		}
 	}
 
 	// Determine output path

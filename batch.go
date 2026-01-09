@@ -9,18 +9,20 @@ import (
 // BatchOptions configures batch download and parsing
 type BatchOptions struct {
 	CIK              string // Required: CIK to fetch filings for
-	FormType         string // Required: Form type to filter (e.g., "4", "3", "5")
+	FormType         string // Required: Form type to filter (e.g., "4", "3", "5", "13D", "13G")
 	DateFrom         string // Optional: Start date (YYYY-MM-DD), empty = no limit
 	DateTo           string // Optional: End date (YYYY-MM-DD), empty = no limit
 	Email            string // Required: Email for SEC User-Agent header
 	IncludePaginated bool   // If true, fetch all paginated filings (can be slow)
+	ListOnly         bool   // If true, only list filings without downloading/parsing
 }
 
 // BatchResult contains the results of a batch operation
 type BatchResult struct {
-	Filings    []*ParsedForm // Generic parsed forms (Form 4, XBRL, etc.)
+	Filings    []*ParsedForm // Generic parsed forms (Form 4, XBRL, etc.) - only populated when ListOnly=false
+	FilingList []Filing      // Filing metadata only - only populated when ListOnly=true
 	TotalFound int           // Total filings matching criteria
-	Fetched    int           // Number actually downloaded and parsed
+	Fetched    int           // Number actually downloaded and parsed (0 when ListOnly=true)
 	Errors     []error       // Any errors encountered during processing
 }
 
@@ -83,6 +85,13 @@ func FetchAndParseBatch(opts BatchOptions) (*BatchResult, error) {
 	}
 
 	result.TotalFound = len(filings)
+
+	// If list-only mode, just return the metadata
+	if opts.ListOnly {
+		result.FilingList = filings
+		fmt.Printf("Listed %d filings (use without --list-only to download and parse)\n", len(filings))
+		return result, nil
+	}
 
 	// Download and parse each filing
 	fmt.Printf("Downloading and parsing %d filings...\n", len(filings))

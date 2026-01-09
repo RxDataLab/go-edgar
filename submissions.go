@@ -211,14 +211,82 @@ func (s *Submissions) GetRecentFilings() []Filing {
 }
 
 // FilterByForm filters filings by form type (e.g., "4", "3", "5")
+// Supports exact matching and prefix matching for amendments
+// Examples:
+//   - "4" matches "4" exactly
+//   - "13D" matches "13D", "13D/A", "13D/A/A", etc.
+//   - "13G" matches "13G", "13G/A", etc.
 func FilterByForm(filings []Filing, formType string) []Filing {
 	var filtered []Filing
 	for _, f := range filings {
-		if f.Form == formType {
+		if matchesFormType(f.Form, formType) {
 			filtered = append(filtered, f)
 		}
 	}
 	return filtered
+}
+
+// matchesFormType checks if a filing form matches the requested form type
+// Supports exact matching and prefix matching for amendments (e.g., "13D" matches "13D/A")
+// Handles Schedule 13 form normalization:
+//   - "13D" → "SC 13D" (matches "SC 13D", "SC 13D/A", etc.)
+//   - "13G" → "SC 13G" (matches "SC 13G", "SC 13G/A", etc.)
+//   - "13" → matches ALL Schedule 13 forms ("SC 13D", "SC 13D/A", "SC 13G", "SC 13G/A", etc.)
+//   - "4" → matches "4" and "4/A"
+func matchesFormType(filingForm, requestedForm string) bool {
+	// Normalize requested form: add "SC" prefix for Schedule 13 forms
+	normalizedRequest := normalizeFormType(requestedForm)
+
+	// Special case: "13" as wildcard for all Schedule 13 forms
+	if requestedForm == "13" {
+		// Match any Schedule 13 form (SC 13D, SC 13G, and amendments)
+		return strings.HasPrefix(filingForm, "SC 13D") || strings.HasPrefix(filingForm, "SC 13G")
+	}
+
+	// Exact match
+	if filingForm == normalizedRequest {
+		return true
+	}
+
+	// Check if it's an amendment variant (e.g., "SC 13D/A" matches request for "SC 13D")
+	// This handles: SC 13D/A, SC 13D/A/A, 4/A, etc.
+	if strings.HasPrefix(filingForm, normalizedRequest+"/") {
+		return true
+	}
+
+	return false
+}
+
+// normalizeFormType converts user-friendly form names to SEC form names
+// Examples:
+//   - "13D" → "SC 13D"
+//   - "13G" → "SC 13G"
+//   - "4" → "4" (unchanged)
+//   - "SC 13D" → "SC 13D" (already normalized)
+func normalizeFormType(formType string) string {
+	// Trim whitespace
+	formType = strings.TrimSpace(formType)
+
+	// If already has "SC" prefix, return as-is
+	if strings.HasPrefix(formType, "SC ") {
+		return formType
+	}
+
+	// Add "SC" prefix for Schedule 13 forms
+	if formType == "13D" || formType == "13G" {
+		return "SC " + formType
+	}
+
+	// Handle amendments: "13D/A" → "SC 13D/A"
+	if strings.HasPrefix(formType, "13D/") {
+		return "SC " + formType
+	}
+	if strings.HasPrefix(formType, "13G/") {
+		return "SC " + formType
+	}
+
+	// Return unchanged for other forms (4, 3, 5, 10-K, etc.)
+	return formType
 }
 
 // FilterByDateRange filters filings by date range (inclusive)
