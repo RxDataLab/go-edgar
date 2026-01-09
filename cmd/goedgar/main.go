@@ -107,6 +107,9 @@ func run(source, email string, saveOriginal bool, outputPath string, pretty bool
 	var urlMeta *edgar.FilingMetadata
 	var err error
 
+	// Determine if we should show progress messages (not when outputting JSON to stdout)
+	showProgress := saveOriginal || outputPath != ""
+
 	if isURL {
 		// Get email for SEC requests (fail fast if not provided)
 		if email == "" {
@@ -118,19 +121,23 @@ func run(source, email string, saveOriginal bool, outputPath string, pretty bool
 
 		// Extract metadata from URL
 		urlMeta, err = edgar.ExtractMetadataFromURL(source)
-		if err != nil {
+		if err != nil && showProgress {
 			fmt.Fprintf(os.Stderr, "Warning: %v\n", err)
 		}
 
 		// Fetch from SEC
-		fmt.Fprintf(os.Stderr, "Fetching from SEC: %s\n", source)
+		if showProgress {
+			fmt.Fprintf(os.Stderr, "Fetching from SEC: %s\n", source)
+		}
 		xmlData, err = edgar.FetchForm(source, email)
 		if err != nil {
 			return fmt.Errorf("failed to fetch form: %w", err)
 		}
 	} else {
 		// Read from file
-		fmt.Fprintf(os.Stderr, "Reading from file: %s\n", source)
+		if showProgress {
+			fmt.Fprintf(os.Stderr, "Reading from file: %s\n", source)
+		}
 		xmlData, err = os.ReadFile(source)
 		if err != nil {
 			return fmt.Errorf("failed to read file: %w", err)
@@ -138,13 +145,17 @@ func run(source, email string, saveOriginal bool, outputPath string, pretty bool
 	}
 
 	// Parse the form (auto-detect type)
-	fmt.Fprintf(os.Stderr, "Parsing form...\n")
+	if showProgress {
+		fmt.Fprintf(os.Stderr, "Parsing form...\n")
+	}
 	form, err := edgar.ParseAny(bytes.NewReader(xmlData))
 	if err != nil {
 		return fmt.Errorf("failed to parse form: %w", err)
 	}
 
-	fmt.Fprintf(os.Stderr, "Detected form type: %s\n", form.FormType)
+	if showProgress {
+		fmt.Fprintf(os.Stderr, "Detected form type: %s\n", form.FormType)
+	}
 
 	// Extract metadata from parsed form
 	formMeta := edgar.ExtractMetadataFromForm(form)
@@ -160,6 +171,14 @@ func run(source, email string, saveOriginal bool, outputPath string, pretty bool
 			// Set accession number if available from URL
 			if meta.Accession != "" {
 				f4.SetFilingMetadata(meta.Accession, "", "")
+			}
+		}
+	} else if form.FormType == "SC 13D" || form.FormType == "SC 13G" {
+		// For Schedule 13 filings, populate filer CIK from URL
+		if sc13, ok := form.Data.(*edgar.Schedule13Filing); ok {
+			// The CIK in the URL is the filer's CIK (the investor), not the issuer
+			if meta.CIK != "" {
+				sc13.FilerCIK = meta.CIK
 			}
 		}
 	}
@@ -185,11 +204,13 @@ func run(source, email string, saveOriginal bool, outputPath string, pretty bool
 			return fmt.Errorf("failed to save files: %w", err)
 		}
 
-		if result.OriginalPath != "" {
-			fmt.Fprintf(os.Stderr, "Saved original XML: %s\n", result.OriginalPath)
-		}
-		if result.OutputPath != "" {
-			fmt.Fprintf(os.Stderr, "Saved JSON output: %s\n", result.OutputPath)
+		if showProgress {
+			if result.OriginalPath != "" {
+				fmt.Fprintf(os.Stderr, "Saved original XML: %s\n", result.OriginalPath)
+			}
+			if result.OutputPath != "" {
+				fmt.Fprintf(os.Stderr, "Saved JSON output: %s\n", result.OutputPath)
+			}
 		}
 	}
 

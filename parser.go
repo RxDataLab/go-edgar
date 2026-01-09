@@ -22,6 +22,7 @@ func ParseAny(r io.Reader) (*ParsedForm, error) {
 	}
 
 	// First check if it's XBRL (10-K, 10-Q, etc.)
+	// IMPORTANT: Check XBRL BEFORE normalization because XML entities should be handled by XML parser
 	xbrlType := DetectXBRLType(data)
 	if xbrlType == "inline" || xbrlType == "standalone" {
 		// Parse XBRL
@@ -77,6 +78,10 @@ func ParseAny(r io.Reader) (*ParsedForm, error) {
 			Data:     form4.ToOutput(),
 		}, nil
 	case "SC 13D", "SC 13D/A", "SC 13G", "SC 13G/A":
+		// Normalize text for Schedule 13 forms (handles non-breaking spaces, HTML entities)
+		// This is critical for HTML parsing where &nbsp; appears in item headings
+		data = NormalizeText(data)
+
 		// Use auto-detection for 13D/G (handles both XML and HTML)
 		sc13, err := ParseSchedule13Auto(data)
 		if err != nil {

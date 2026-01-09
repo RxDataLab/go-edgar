@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	VERSION = "0.2.0"
+	VERSION = "0.3.0"
 
 	// RateLimit delays between requests (SEC requires 10 requests/second max)
 	RateLimit = 100 * time.Millisecond

@@ -24,7 +24,7 @@ Simple, fast, minimal dependencies (stdlib only for core functionality).
 go-edgar/
 ├── cmd/
 │   └── goedgar/
-│       └── main.go         # CLI entry point (orchestrator only)
+│       └── main.go         # CLI entry point (handles all form types)
 ├── form4.go                # Form 4 parsing logic & data structures
 ├── form4_output.go         # Form 4 JSON output format
 ├── form4_tenb51.go         # Form 4 10b5-1 detection logic

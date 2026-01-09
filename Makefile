@@ -1,4 +1,4 @@
-.PHONY: build build-all test clean install help snapshot-review snapshot-accept snapshot-reject xbrl-demo
+.PHONY: build test clean install help snapshot-review snapshot-accept snapshot-reject
 
 # Build the goedgar CLI
 build:
@@ -50,8 +50,6 @@ snapshot-reject:
 help:
 	@echo "Available targets:"
 	@echo "  make build             - Build the goedgar CLI"
-	@echo "  make xbrl-demo         - Build the XBRL demo tool"
-	@echo "  make build-all         - Build all tools (goedgar + xbrl-demo)"
 	@echo "  make test              - Run all tests (including integration tests)"
 	@echo "  make test-short        - Run tests in short mode (skip integration tests)"
 	@echo "  make clean             - Remove build artifacts and output directory"

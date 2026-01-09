@@ -297,10 +297,3 @@ func TestParseSchedule13G(t *testing.T) {
 		t.Error("Expected IsPassive() to return true for 13G")
 	}
 }
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}

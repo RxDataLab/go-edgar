@@ -227,12 +227,15 @@ func FilterByForm(filings []Filing, formType string) []Filing {
 }
 
 // matchesFormType checks if a filing form matches the requested form type
-// Supports exact matching and prefix matching for amendments (e.g., "13D" matches "13D/A")
-// Handles Schedule 13 form normalization:
+// Handles Schedule 13 form normalization and amendment matching:
 //   - "13D" → "SC 13D" (matches "SC 13D", "SC 13D/A", etc.)
 //   - "13G" → "SC 13G" (matches "SC 13G", "SC 13G/A", etc.)
 //   - "13" → matches ALL Schedule 13 forms ("SC 13D", "SC 13D/A", "SC 13G", "SC 13G/A", etc.)
-//   - "4" → matches "4" and "4/A"
+//   - "4" → matches "4" only (exact match, NO amendments)
+//   - "3", "5" → exact match only
+//
+// Note: Form 4/3/5 do NOT include amendments by default (use "4/A" explicitly to match amendments).
+// Schedule 13 forms DO include amendments when filtering by base type.
 func matchesFormType(filingForm, requestedForm string) bool {
 	// Normalize requested form: add "SC" prefix for Schedule 13 forms
 	normalizedRequest := normalizeFormType(requestedForm)
@@ -248,10 +251,14 @@ func matchesFormType(filingForm, requestedForm string) bool {
 		return true
 	}
 
-	// Check if it's an amendment variant (e.g., "SC 13D/A" matches request for "SC 13D")
-	// This handles: SC 13D/A, SC 13D/A/A, 4/A, etc.
-	if strings.HasPrefix(filingForm, normalizedRequest+"/") {
-		return true
+	// Amendment matching: Only include amendments for Schedule 13 forms
+	// Form 4/3/5 require exact match (no implicit amendment inclusion)
+	isSchedule13Request := strings.HasPrefix(normalizedRequest, "SC 13")
+	if isSchedule13Request {
+		// Schedule 13: include amendments (e.g., "SC 13D/A" matches request for "SC 13D")
+		if strings.HasPrefix(filingForm, normalizedRequest+"/") {
+			return true
+		}
 	}
 
 	return false
